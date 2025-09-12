@@ -117,7 +117,7 @@ public class TrainMurderMysteryClient implements ClientModInitializer {
 
     public static boolean isSkyVisibleAdjacent(ClientPlayerEntity player) {
         BlockPos.Mutable mutable = new BlockPos.Mutable();
-        BlockPos playerPos = player.getBlockPos();
+        BlockPos playerPos = BlockPos.ofFloored(player.getEyePos());
         for (int x = -1; x <= 1; x+=2) {
             for (int z = -1; z <= 1; z+=2) {
                 mutable.set(playerPos.getX() + x, playerPos.getY(), playerPos.getZ() + z);
@@ -132,7 +132,7 @@ public class TrainMurderMysteryClient implements ClientModInitializer {
 
     public static boolean isExposedToWind(ClientPlayerEntity player) {
         BlockPos.Mutable mutable = new BlockPos.Mutable();
-        BlockPos playerPos = player.getBlockPos();
+        BlockPos playerPos = BlockPos.ofFloored(player.getEyePos());
 
         for (int x = 0; x <= 10; x++) {
             mutable.set(playerPos.getX() - x, player.getEyePos().getY(), playerPos.getZ());
