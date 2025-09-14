@@ -196,8 +196,6 @@ public class TrainMurderMysteryLangGen extends FabricLanguageProvider {
         builder.add(TrainMurderMysteryItems.LOCKPICK, "Lockpick");
         builder.add(TrainMurderMysteryItems.KNIFE, "Knife");
         builder.add(TrainMurderMysteryItems.REVOLVER, "Revolver");
-//        builder.add(TrainMurderMysteryItems.POISON_VIAL, "Poison Vial");
-//        builder.add(TrainMurderMysteryItems.SCORPION, "Scorpion");
 
         builder.add("itemGroup.trainmurdermystery.building", "TrainMurderMystery: Building Blocks");
         builder.add("itemGroup.trainmurdermystery.decoration", "TrainMurderMystery: Decoration & Functional");
@@ -214,6 +212,12 @@ public class TrainMurderMysteryLangGen extends FabricLanguageProvider {
 
         builder.add("tip.door.requires_key", "This door is locked and requires a key to be opened.");
         builder.add("tip.door.requires_different_key", "This door is locked and requires a different key to be opened.");
+        builder.add("tip.knife.tooltip1", "Right-click to use, hold for a");
+        builder.add("tip.knife.tooltip2", "second and get close to your victim!");
+        builder.add("tip.knife.tooltip3", "After a kill, cannot be used for 3 minutes.");
+        builder.add("tip.knife.tooltip4", "Can also be used to push players off");
+        builder.add("tip.knife.tooltip5", "the train with an attack (no cooldown).");
+        builder.add("tip.knife.cooldown", "Thirst satiated! Cannot kill for %s");
 
         builder.add("game.win.hitmen", "All targets were eliminated: The Hitmen win!");
         builder.add("game.win.passengers", "All hitmen were eliminated: The Passengers win!");

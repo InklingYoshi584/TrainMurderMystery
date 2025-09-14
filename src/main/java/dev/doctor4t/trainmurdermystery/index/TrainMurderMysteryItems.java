@@ -25,7 +25,7 @@ public interface TrainMurderMysteryItems {
 
     Item ROOM_KEY = registrar.create("room_key", new RoomKeyItem(new Item.Settings().maxCount(1)), EQUIPMENT_GROUP);
     Item LOCKPICK = registrar.create("lockpick", new LockpickItem(new Item.Settings().maxCount(1)), EQUIPMENT_GROUP);
-    Item KNIFE = registrar.create("knife", new KnifeItem(new Item.Settings().maxCount(1).attributeModifiers(SwordItem.createAttributeModifiers(ToolMaterials.IRON, 6, -2.5F))), EQUIPMENT_GROUP);
+    Item KNIFE = registrar.create("knife", new KnifeItem(new Item.Settings().maxCount(1)), EQUIPMENT_GROUP);
     Item REVOLVER = registrar.create("revolver", new RevolverItem(new Item.Settings().maxCount(1)), EQUIPMENT_GROUP);
 
     static void initialize() {

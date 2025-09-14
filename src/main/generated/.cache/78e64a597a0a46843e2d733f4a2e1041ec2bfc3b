@@ -1,4 +1,4 @@
-// 1.21.1	2025-09-12T15:22:09.6395973	TrainMurderMystery/Block Loot Tables
+// 1.21.1	2025-09-14T16:51:10.2330813	TrainMurderMystery/Block Loot Tables
 1d4929d7d6176f60e5ea991a577527ed251ef375 data\trainmurdermystery\loot_table\blocks\pristine_gold_stairs.json
 1d4929d7d6176f60e5ea991a577527ed251ef375 data\trainmurdermystery\loot_table\blocks\stainless_steel_walkway.json
 1d4929d7d6176f60e5ea991a577527ed251ef375 data\trainmurdermystery\loot_table\blocks\gold_slab.json
@@ -101,8 +101,8 @@ c7b0dd37486f2c5a14cb02d795621fa2bf06cc80 data\trainmurdermystery\loot_table\bloc
 6a733ad18b50161a3c5ea6a318877813a2b53d33 data\trainmurdermystery\loot_table\blocks\metal_sheet_stairs.json
 f51de6ededb0018e926836845000deac1452e4de data\trainmurdermystery\loot_table\blocks\stripped_jungle_branch.json
 1d4929d7d6176f60e5ea991a577527ed251ef375 data\trainmurdermystery\loot_table\blocks\pristine_gold_pillar.json
-1d4929d7d6176f60e5ea991a577527ed251ef375 data\trainmurdermystery\loot_table\blocks\gold.json
 1d4929d7d6176f60e5ea991a577527ed251ef375 data\trainmurdermystery\loot_table\blocks\stainless_steel_branch.json
+1d4929d7d6176f60e5ea991a577527ed251ef375 data\trainmurdermystery\loot_table\blocks\gold.json
 1d4929d7d6176f60e5ea991a577527ed251ef375 data\trainmurdermystery\loot_table\blocks\stainless_steel_slab.json
 90cc027435ef9caf9862b72ae1f91bb1d50504f2 data\trainmurdermystery\loot_table\blocks\gold_ledge.json
 1d4929d7d6176f60e5ea991a577527ed251ef375 data\trainmurdermystery\loot_table\blocks\pristine_gold.json

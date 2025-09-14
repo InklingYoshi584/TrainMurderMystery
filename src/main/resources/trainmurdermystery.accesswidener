@@ -10,3 +10,9 @@ accessible method net/minecraft/client/render/Camera setPos (Lnet/minecraft/util
 
 accessible class net/minecraft/client/gui/widget/OptionListWidget$OptionWidgetEntry
 accessible class net/minecraft/client/gui/widget/OptionListWidget$WidgetEntry
+
+accessible class net/minecraft/entity/player/ItemCooldownManager$Entry
+accessible field net/minecraft/entity/player/ItemCooldownManager entries Ljava/util/Map;
+accessible field net/minecraft/entity/player/ItemCooldownManager$Entry startTick I
+accessible field net/minecraft/entity/player/ItemCooldownManager$Entry endTick I
+accessible field net/minecraft/entity/player/ItemCooldownManager tick I
