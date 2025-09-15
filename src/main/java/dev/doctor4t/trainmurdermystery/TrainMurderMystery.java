@@ -54,6 +54,7 @@ public class TrainMurderMystery implements ModInitializer {
 // TODO: Add drink cabinet
 // TODO: Add death when off the train
 // TODO: Nicer starting phase + UI
-// TODO: Add letter item
+// TODO: Add letter item for detective and passenger
 // TODO: System that remembers previous roles and allows cycling of roles
-// TODO: Fix locked option bug + lock audio
+// TODO: Lock audio
+// TODO: Disable item drops

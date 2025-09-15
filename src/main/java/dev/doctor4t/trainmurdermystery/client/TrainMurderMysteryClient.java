@@ -122,11 +122,24 @@ public class TrainMurderMysteryClient implements ClientModInitializer {
         ClientTickEvents.START_WORLD_TICK.register(clientWorld -> {
             trainSpeed = TrainMurderMysteryComponents.TRAIN.get(clientWorld).getTrainSpeed();
             GAME_COMPONENT = TrainMurderMysteryComponents.GAME.get(clientWorld);
+
+            System.out.println(OptionLocker.OPTIONS_KEYS);
         });
 
         // Lock options
         OptionLocker.overrideOption("gamma", 0d);
         OptionLocker.overrideOption("renderDistance", 32);
+        OptionLocker.overrideOption("showSubtitles", false);
+        OptionLocker.overrideSoundCategoryVolume("music", Optional.of(0.0));
+        OptionLocker.overrideSoundCategoryVolume("record", Optional.of(0.1));
+        OptionLocker.overrideSoundCategoryVolume("weather", Optional.of(1.0));
+        OptionLocker.overrideSoundCategoryVolume("block", Optional.of(1.0));
+        OptionLocker.overrideSoundCategoryVolume("hostile", Optional.of(1.0));
+        OptionLocker.overrideSoundCategoryVolume("neutral", Optional.of(1.0));
+        OptionLocker.overrideSoundCategoryVolume("player", Optional.of(1.0));
+        OptionLocker.overrideSoundCategoryVolume("ambient", Optional.of(1.0));
+        OptionLocker.overrideSoundCategoryVolume("voice", Optional.of(1.0));
+
 
         // Item tooltips
         TMMItemTooltips.addTooltips();
