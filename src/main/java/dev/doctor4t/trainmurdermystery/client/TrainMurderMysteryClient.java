@@ -12,12 +12,15 @@ import dev.doctor4t.trainmurdermystery.client.render.block_entity.SmallDoorBlock
 import dev.doctor4t.trainmurdermystery.client.util.TMMItemTooltips;
 import dev.doctor4t.trainmurdermystery.index.*;
 import dev.doctor4t.trainmurdermystery.util.HandParticleManager;
+import dev.doctor4t.trainmurdermystery.util.MatrixParticleManager;
+import dev.doctor4t.trainmurdermystery.util.ShootMuzzleS2CPayload;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.block.Block;
@@ -26,6 +29,7 @@ import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.option.Perspective;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 import net.minecraft.client.render.entity.EmptyEntityRenderer;
@@ -33,15 +37,18 @@ import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.*;
 
 public class TrainMurderMysteryClient implements ClientModInitializer {
     public static HandParticleManager handParticleManager;
+    public static Map<PlayerEntity, Vec3d> particleMap;
     private static float trainSpeed;
     private static boolean prevGameRunning;
     private static WorldGameComponent GAME_COMPONENT;
@@ -59,6 +66,7 @@ public class TrainMurderMysteryClient implements ClientModInitializer {
     public void onInitializeClient() {
         //Initialize ScreenParticle
         handParticleManager = new HandParticleManager();
+        particleMap = new HashMap<>();
 
         // Register particle factories
         TrainMurderMysteryParticles.registerFactories();
@@ -133,7 +141,7 @@ public class TrainMurderMysteryClient implements ClientModInitializer {
 
         // Lock options
         OptionLocker.overrideOption("gamma", 0d);
-        OptionLocker.overrideOption("renderDistance", 32);
+        //TODO: remove the comment // mfw 15 fps on a 3050 // OptionLocker.overrideOption("renderDistance", 32);
         OptionLocker.overrideOption("showSubtitles", false);
         OptionLocker.overrideSoundCategoryVolume("music", 0.0);
         OptionLocker.overrideSoundCategoryVolume("record", 0.1);
@@ -164,6 +172,26 @@ public class TrainMurderMysteryClient implements ClientModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register((client) -> {
             TrainMurderMysteryClient.handParticleManager.tick();
+        });
+
+        ClientPlayNetworking.registerGlobalReceiver(ShootMuzzleS2CPayload.ID, (payload, context) -> {
+            MinecraftClient client = MinecraftClient.getInstance();
+            client.execute(() -> {
+                PlayerEntity shooter = client.world.getPlayerByUuid(UUID.fromString(payload.shooterId()));
+                if (shooter != null) {
+                    if (shooter.getUuid() == client.player.getUuid() &&
+                            client.options.getPerspective() == Perspective.FIRST_PERSON) return;
+
+                    Vec3d muzzlePos = MatrixParticleManager.getMuzzlePosForPlayer(shooter);
+                    if (muzzlePos != null) {
+                        client.world.addParticle(
+                                ParticleTypes.SMOKE,
+                                muzzlePos.x, muzzlePos.y, muzzlePos.z,
+                                0, 0, 0
+                        );
+                    }
+                }
+            });
         });
 
         // Instinct keybind

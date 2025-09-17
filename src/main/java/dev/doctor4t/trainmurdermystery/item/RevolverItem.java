@@ -5,29 +5,25 @@ import dev.doctor4t.trainmurdermystery.block.SmallDoorBlock;
 import dev.doctor4t.trainmurdermystery.block_entity.SmallDoorBlockEntity;
 import dev.doctor4t.trainmurdermystery.client.TrainMurderMysteryClient;
 import dev.doctor4t.trainmurdermystery.client.particle.HandParticle;
-import dev.doctor4t.trainmurdermystery.entity.PlayerBodyEntity;
 import dev.doctor4t.trainmurdermystery.game.GameLoop;
 import dev.doctor4t.trainmurdermystery.index.TMMDataComponentTypes;
-import dev.doctor4t.trainmurdermystery.index.TrainMurderMysteryEntities;
 import dev.doctor4t.trainmurdermystery.index.TrainMurderMysterySounds;
-import dev.doctor4t.trainmurdermystery.util.HandParticleManager;
-import dev.doctor4t.trainmurdermystery.util.MatrixUtils;
+import dev.doctor4t.trainmurdermystery.util.ShootMuzzleS2CPayload;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.enums.DoubleBlockHalf;
-import net.minecraft.client.render.model.json.ModelTransformationMode;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.*;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 
@@ -50,6 +46,13 @@ public class RevolverItem extends Item {
         }
 
         if (!world.isClient) {
+            if (user instanceof ServerPlayerEntity shooter) {
+                for (ServerPlayerEntity tracking : PlayerLookup.tracking(shooter)) {
+                    ServerPlayNetworking.send(tracking, new ShootMuzzleS2CPayload(shooter.getUuidAsString()));
+                }
+                ServerPlayNetworking.send(shooter, new ShootMuzzleS2CPayload(shooter.getUuidAsString()));
+            }
+
             world.playSound(null, user.getX(), user.getEyeY(), user.getZ(), TrainMurderMysterySounds.ITEM_REVOLVER_CLICK, SoundCategory.PLAYERS, 0.5f, 1f + world.random.nextFloat() * .1f - .05f);
             if (bullets > 0) {
                 world.playSound(null, user.getX(), user.getEyeY(), user.getZ(), TrainMurderMysterySounds.ITEM_REVOLVER_SHOOT, SoundCategory.PLAYERS, 5f, 1f + world.random.nextFloat() * .1f - .05f);
@@ -80,6 +83,11 @@ public class RevolverItem extends Item {
                 return TypedActionResult.fail(user.getStackInHand(hand));
             }
         }
+    }
+
+    @Override
+    public UseAction getUseAction(ItemStack stack) {
+        return UseAction.NONE;
     }
 
     @Override

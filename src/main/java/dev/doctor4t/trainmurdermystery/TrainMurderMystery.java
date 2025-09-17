@@ -6,13 +6,24 @@ import dev.doctor4t.trainmurdermystery.command.StartGameCommand;
 import dev.doctor4t.trainmurdermystery.game.GameLoop;
 import dev.doctor4t.trainmurdermystery.index.*;
 import dev.doctor4t.trainmurdermystery.util.HandParticleManager;
+import dev.doctor4t.trainmurdermystery.util.MatrixParticleManager;
+import dev.doctor4t.trainmurdermystery.util.ShootMuzzleS2CPayload;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Vec3d;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Map;
+import java.util.UUID;
 
 public class TrainMurderMystery implements ModInitializer {
     public static final String MOD_ID = "trainmurdermystery";
@@ -42,6 +53,8 @@ public class TrainMurderMystery implements ModInitializer {
 
         // Game loop tick
         ServerTickEvents.START_WORLD_TICK.register(GameLoop::tick);
+
+        PayloadTypeRegistry.playS2C().register(ShootMuzzleS2CPayload.ID, ShootMuzzleS2CPayload.CODEC);
     }
 
     public static boolean shouldRestrictPlayerOptions(PlayerEntity player) {
