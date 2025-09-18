@@ -33,7 +33,7 @@ public class HandParticleManager {
         Vector3f up = new Vector3f(0, 1, 0);
 
         for (HandParticle p : particles) {
-            RenderLayer rl = RenderLayer.getEntityTranslucentEmissive(p.texture);
+            RenderLayer rl = p.renderLayerFactory.apply(p.texture);
             VertexConsumer consumer = vertexConsumers.getBuffer(rl);
 
             float half = p.size * 0.5f;
@@ -59,19 +59,55 @@ public class HandParticleManager {
             Vector3f c3 = new Vector3f(center).add(new Vector3f(right).mul( half)).add(new Vector3f(up).mul( half));
             Vector3f c4 = new Vector3f(center).add(new Vector3f(right).mul( half)).add(new Vector3f(up).mul(-half));
 
-            putVertex(consumer, model, c1, u0, v1, LightmapTextureManager.MAX_LIGHT_COORDINATE);
-            putVertex(consumer, model, c2, u0, v0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
-            putVertex(consumer, model, c3, u1, v0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
-            putVertex(consumer, model, c4, u1, v1, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+            putVertex(consumer, model, c1, u0, v1, p);
+            putVertex(consumer, model, c2, u0, v0, p);
+            putVertex(consumer, model, c3, u1, v0, p);
+            putVertex(consumer, model, c4, u1, v1, p);
         }
     }
 
-    private static void putVertex(VertexConsumer consumer, Matrix4f model, Vector3f pos, float u, float v, int light) {
+    private static void putVertex(VertexConsumer consumer, Matrix4f model, Vector3f pos, float u, float v, HandParticle p) {
+        float t = p.age / p.maxAge;
+
+        int n = p.rColors.length;
+        float r, g, b;
+        if (n == 1) {
+            r = p.rColors[0]; g = p.gColors[0]; b = p.bColors[0];
+        } else {
+            float scaled = t * (n - 1);
+            int idx = (int) Math.floor(scaled);
+            int next = Math.min(idx + 1, n - 1);
+            float localT = scaled - idx;
+
+            r = lerp(localT, p.rColors[idx], p.rColors[next]);
+            g = lerp(localT, p.gColors[idx], p.gColors[next]);
+            b = lerp(localT, p.bColors[idx], p.bColors[next]);
+        }
+
+        n = p.aColors.length;
+        float a;
+        if (n == 1) a = p.aColors[0];
+        else {
+            float scaled = t * (n - 1);
+            int idx = (int) Math.floor(scaled);
+            int next = Math.min(idx + 1, n - 1);
+            float localT = scaled - idx;
+            a = lerp(localT, p.aColors[idx], p.aColors[next]);
+        }
+
+        float displayR = r * a;
+        float displayG = g * a;
+        float displayB = b * a;
+
         consumer.vertex(model, pos.x, pos.y, pos.z)
-                .color(1f, 1f, 1f, 1f)
+                .color(displayR, displayG, displayB, a)
                 .texture(u, v)
                 .overlay(OverlayTexture.DEFAULT_UV)
-                .light(light)
+                .light(p.light)
                 .normal(0f, 1f, 0f);
+    }
+
+    private static float lerp(float t, float a, float b) {
+        return a + t * (b - a);
     }
 }

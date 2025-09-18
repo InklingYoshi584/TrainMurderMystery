@@ -6,6 +6,7 @@ import dev.doctor4t.trainmurdermystery.block.UnblastableDoorBlock;
 import dev.doctor4t.trainmurdermystery.block_entity.SmallDoorBlockEntity;
 import dev.doctor4t.trainmurdermystery.client.TMMClient;
 import dev.doctor4t.trainmurdermystery.client.particle.HandParticle;
+import dev.doctor4t.trainmurdermystery.client.render.TMMRenderLayers;
 import dev.doctor4t.trainmurdermystery.game.TMMGameLoop;
 import dev.doctor4t.trainmurdermystery.index.TMMDataComponentTypes;
 import dev.doctor4t.trainmurdermystery.index.TMMSounds;
@@ -14,6 +15,7 @@ import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.enums.DoubleBlockHalf;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.Item;
@@ -27,6 +29,8 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
+
+import java.awt.*;
 
 public class RevolverItem extends Item {
     public RevolverItem(Settings settings) {
@@ -72,12 +76,17 @@ public class RevolverItem extends Item {
             if (bullets > 0) {
                 user.setPitch(user.getPitch() - 4);
 
-                HandParticle particle_animated = new HandParticle(0.1f, 0.275f, -0.2f,
-                        0, 0, 0,
-                        0.4f, 1,
-                        TMM.id("textures/particle/gunshot.png"),
-                        1, false);
-                TMMClient.handParticleManager.spawn(particle_animated);
+                HandParticle handParticle = new HandParticle()
+                        .setTexture(TMM.id("textures/particle/gunshot.png"))
+                        .setPos(0.1f, 0.275f, -0.2f)
+                        .setMaxAge(8)
+                        .setSize(0.5f)
+                        .setVelocity(0f, 0f, 0f)
+                        .setLight(15, 15)
+                        .setAlpha(0.1f, 1f, 1f, 1f, 0.1f)
+                        .setRenderLayer(TMMRenderLayers::additive);
+
+                TMMClient.handParticleManager.spawn(handParticle);
 
                 return TypedActionResult.consume(user.getStackInHand(hand));
             } else {
