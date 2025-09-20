@@ -1,11 +1,13 @@
 package dev.doctor4t.trainmurdermystery.cca;
 
+import dev.doctor4t.trainmurdermystery.game.TMMGameConstants;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
@@ -17,11 +19,12 @@ import java.util.UUID;
 public class WorldGameComponent implements AutoSyncedComponent {
     private final World world;
 
-    private boolean running = false;
-    private int fadeIn = -1;
-    private int fadeOut = -1;
+    public enum GameStatus {
+        INACTIVE, STARTING, ACTIVE, STOPPING
+    }
+    private GameStatus gameStatus = GameStatus.INACTIVE;
+    private int fade = 0;
 
-    private List<UUID> players = new ArrayList<>();
     private List<UUID> hitmen = new ArrayList<>();
     private List<UUID> detectives = new ArrayList<>();
     private List<UUID> targets = new ArrayList<>();
@@ -34,40 +37,26 @@ public class WorldGameComponent implements AutoSyncedComponent {
         TMMComponents.GAME.sync(this.world);
     }
 
-    public void start() {
-        this.setRunning(true);
+    public int getFade() {
+        return fade;
+    }
+
+    public void setFade(int fade) {
+        this.fade = MathHelper.clamp(fade, 0, TMMGameConstants.FADE_TIME + TMMGameConstants.FADE_PAUSE);
         this.sync();
     }
 
-    public void stop() {
-        this.setRunning(false);
+    public void setGameStatus(GameStatus gameStatus) {
+        this.gameStatus = gameStatus;
         this.sync();
     }
 
-    public int getFadeIn() {
-        return fadeIn;
-    }
-
-    public void setFadeIn(int getFadeIn) {
-        this.fadeIn = getFadeIn;
-        this.sync();
-    }
-
-    public int getFadeOut() {
-        return fadeOut;
-    }
-
-    public void setFadeOut(int fadeOut) {
-        this.fadeOut = fadeOut;
-        this.sync();
-    }
-
-    public void setRunning(boolean running) {
-        this.running = running;
+    public GameStatus getGameStatus() {
+        return gameStatus;
     }
 
     public boolean isRunning() {
-        return this.running;
+        return this.gameStatus == GameStatus.ACTIVE || this.gameStatus == GameStatus.STOPPING;
     }
 
     public List<UUID> getHitmen() {
@@ -138,10 +127,9 @@ public class WorldGameComponent implements AutoSyncedComponent {
 
     @Override
     public void readFromNbt(NbtCompound nbtCompound, RegistryWrapper.WrapperLookup wrapperLookup) {
-        this.running = nbtCompound.getBoolean("Running");
+        this.gameStatus = GameStatus.valueOf(nbtCompound.getString("GameStatus"));
 
-        this.fadeIn = nbtCompound.getInt("FadeIn");
-        this.fadeOut = nbtCompound.getInt("FadeOut");
+        this.fade = nbtCompound.getInt("Fade");
 
         this.setTargets(uuidListFromNbt(nbtCompound, "Targets"));
         this.setHitmen(uuidListFromNbt(nbtCompound, "Hitmen"));
@@ -158,10 +146,9 @@ public class WorldGameComponent implements AutoSyncedComponent {
 
     @Override
     public void writeToNbt(NbtCompound nbtCompound, RegistryWrapper.WrapperLookup wrapperLookup) {
-        nbtCompound.putBoolean("Running", this.running);
+        nbtCompound.putString("GameStatus", this.gameStatus.toString());
 
-        nbtCompound.putInt("FadeIn", fadeIn);
-        nbtCompound.putInt("FadeOut", fadeOut);
+        nbtCompound.putInt("Fade", fade);
 
         nbtCompound.put("Targets", nbtFromUuidList(getTargets()));
         nbtCompound.put("Hitmen", nbtFromUuidList(getHitmen()));

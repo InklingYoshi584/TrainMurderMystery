@@ -8,10 +8,10 @@ import net.minecraft.server.command.ServerCommandSource;
 public class ResetTrainCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(
-                CommandManager.literal("tmm:resetTrain")
+                CommandManager.literal("tmm:forceReset")
                         .requires(source -> source.hasPermissionLevel(2))
                         .executes(context -> {
-                            TMMGameLoop.resetTrain(context.getSource().getWorld());
+                            TMMGameLoop.finalizeGame(context.getSource().getWorld());
                             return 1;
                         })
         );

@@ -1,15 +1,18 @@
 package dev.doctor4t.trainmurdermystery.game;
 
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import dev.doctor4t.trainmurdermystery.util.Carriage;
 import net.minecraft.util.math.Box;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public interface TMMGameConstants {
     // Logistics
-    int FADE_TIME = 50;
+    int FADE_TIME = 40;
+    int FADE_PAUSE = 20;
 
     // Blocks
     int DOOR_AUTOCLOSE_TIME = getInTicks(0, 5);
@@ -25,6 +28,7 @@ public interface TMMGameConstants {
     // Game areas
     Box READY_AREA = new Box(-981, 1, -364, -813, 3, -358);
     BlockPos PLAY_POS = new BlockPos(-19, 122, -539);
+    Consumer<ServerPlayerEntity> SPECTATOR_TP = serverPlayerEntity -> serverPlayerEntity.teleport(serverPlayerEntity.getServerWorld(), -68 ,133, -535.5, -90, 15);
 
     Box PLAY_AREA = new Box(-140, 118, -535.5f - 15, 230, 200, -535.5f + 15);
     Box BACKUP_TRAIN_LOCATION = new Box(-57, 64, -531, 177, 74, -540);
@@ -47,7 +51,7 @@ public interface TMMGameConstants {
     float MOOD_GAIN = 1f / getInTicks(0, 15);
     int MIN_PREFERENCE_COOLDOWN = getInTicks(0, 30);
     int MAX_PREFERENCE_COOLDOWN = getInTicks(0, 30);
-    int TIME_TO_FIRST_TASK = getInTicks(0, 0);
+    int TIME_TO_FIRST_TASK = getInTicks(0, 10);
 
     static int getInTicks(int minutes, int seconds) {
         return (minutes * 60 + seconds) * 20;

@@ -4,7 +4,6 @@ import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import dev.doctor4t.trainmurdermystery.TMM;
-import dev.doctor4t.trainmurdermystery.cca.PlayerMoodComponent;
 import dev.doctor4t.trainmurdermystery.client.TMMClient;
 import dev.doctor4t.trainmurdermystery.client.gui.CrosshairRenderer;
 import dev.doctor4t.trainmurdermystery.client.gui.MoodRenderer;
@@ -87,23 +86,11 @@ public class InGameHudMixin {
     @WrapMethod(method = "renderSleepOverlay")
     private void tmm$overrideSleepOverlay(DrawContext context, RenderTickCounter tickCounter, Operation<Void> original) {
         if (TMMClient.GAME_COMPONENT != null) {
-            // game start fade in
-            float fadeIn = TMMClient.GAME_COMPONENT.getFadeIn();
-            float tickDelta = 0; //MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(false);
+            // game start / stop fade in / out
+            float fadeIn = TMMClient.GAME_COMPONENT.getFade();
             if (fadeIn >= 0) {
-                this.client.getProfiler().push("tmmFadeIn");
-                float fadeAlpha = MathHelper.lerp(Math.min(fadeIn / TMMGameConstants.FADE_TIME + tickDelta, 1), 0f, 1f);
-                Color color = new Color(0f, 0f, 0f, fadeAlpha);
-
-                context.fill(RenderLayer.getGuiOverlay(), 0, 0, context.getScaledWindowWidth(), context.getScaledWindowHeight(), color.getRGB());
-                this.client.getProfiler().pop();
-            }
-
-            // game stop fade out
-            float fadeOut = TMMClient.GAME_COMPONENT.getFadeOut();
-            if (fadeOut >= 0) {
-                this.client.getProfiler().push("tmmFadeOut");
-                float fadeAlpha = MathHelper.lerp(Math.min(fadeOut / TMMGameConstants.FADE_TIME + tickDelta, 1), 0f, 1f);
+                this.client.getProfiler().push("tmmFade");
+                float fadeAlpha = MathHelper.lerp(Math.min(fadeIn / TMMGameConstants.FADE_TIME, 1), 0f, 1f);
                 Color color = new Color(0f, 0f, 0f, fadeAlpha);
 
                 context.fill(RenderLayer.getGuiOverlay(), 0, 0, context.getScaledWindowWidth(), context.getScaledWindowHeight(), color.getRGB());

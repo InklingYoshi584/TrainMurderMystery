@@ -12,11 +12,10 @@ import dev.doctor4t.trainmurdermystery.client.model.TrainMurderMysteryEntityMode
 import dev.doctor4t.trainmurdermystery.client.render.block_entity.SmallDoorBlockEntityRenderer;
 import dev.doctor4t.trainmurdermystery.client.render.block_entity.WheelBlockEntityRenderer;
 import dev.doctor4t.trainmurdermystery.client.util.TMMItemTooltips;
+import dev.doctor4t.trainmurdermystery.game.TMMGameConstants;
 import dev.doctor4t.trainmurdermystery.game.TMMGameLoop;
 import dev.doctor4t.trainmurdermystery.index.*;
 import dev.doctor4t.trainmurdermystery.util.HandParticleManager;
-import dev.doctor4t.trainmurdermystery.util.KnifeStabPayload;
-import dev.doctor4t.trainmurdermystery.util.MatrixParticleManager;
 import dev.doctor4t.trainmurdermystery.util.ShootMuzzleS2CPayload;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.api.ClientModInitializer;
@@ -32,7 +31,6 @@ import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.option.Perspective;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 import net.minecraft.client.render.entity.EmptyEntityRenderer;
@@ -42,14 +40,17 @@ import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.Registries;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.*;
 
 public class TMMClient implements ClientModInitializer {
+    private static float soundLevel = 0f;
     public static HandParticleManager handParticleManager;
     public static Map<PlayerEntity, Vec3d> particleMap;
     private static float trainSpeed;
@@ -156,9 +157,10 @@ public class TMMClient implements ClientModInitializer {
 
         // Lock options
         OptionLocker.overrideOption("gamma", 0d);
-        OptionLocker.overrideOption("renderDistance", 32); // mfw 15 fps on a 3050 - Cup // haha 🫵 brokie - RAT // buy me a better one then - Cup //
+        OptionLocker.overrideOption("renderDistance", 32); // mfw 15 fps on a 3050 - Cup // haha 🫵 brokie - RAT // buy me a better one then - Cup // okay nvm I fixed it I was actually rendering a lot of empty chunks we didn't need my bad LMAO - RAT
         OptionLocker.overrideOption("showSubtitles", false);
         OptionLocker.overrideOption("autoJump", false);
+        OptionLocker.overrideOption("clouds", false);
         OptionLocker.overrideSoundCategoryVolume("music", 0.0);
         OptionLocker.overrideSoundCategoryVolume("record", 0.1);
         OptionLocker.overrideSoundCategoryVolume("weather", 1.0);
@@ -172,18 +174,28 @@ public class TMMClient implements ClientModInitializer {
         // Item tooltips
         TMMItemTooltips.addTooltips();
 
-        // Cache player entries + select last slot at start of game
         ClientTickEvents.START_WORLD_TICK.register(clientWorld -> {
+            // Cache player entries
             for (AbstractClientPlayerEntity player : clientWorld.getPlayers()) {
                 if (!PLAYER_ENTRIES_CACHE.containsKey(player.getUuid())) {
                     PLAYER_ENTRIES_CACHE.put(player.getUuid(), MinecraftClient.getInstance().getNetworkHandler().getPlayerListEntry(player.getUuid()));
                 }
             }
 
+            // Select last slot at start of game
             if (!prevGameRunning && GAME_COMPONENT.isRunning()) {
                 MinecraftClient.getInstance().player.getInventory().selectedSlot = 8;
             }
             prevGameRunning = GAME_COMPONENT.isRunning();
+
+            // Fade sound with game start / stop fade
+            WorldGameComponent component = TMMComponents.GAME.get(clientWorld);
+            if (component.getFade() >= 0) {
+                MinecraftClient.getInstance().getSoundManager().updateSoundVolume(SoundCategory.MASTER, MathHelper.map(component.getFade(), 0, TMMGameConstants.FADE_TIME, 1, 0));
+            } else {
+                MinecraftClient.getInstance().getSoundManager().updateSoundVolume(SoundCategory.MASTER, soundLevel);
+                soundLevel = MinecraftClient.getInstance().options.getSoundVolume(SoundCategory.MASTER);
+            }
         });
 
         ClientTickEvents.END_CLIENT_TICK.register((client) -> {

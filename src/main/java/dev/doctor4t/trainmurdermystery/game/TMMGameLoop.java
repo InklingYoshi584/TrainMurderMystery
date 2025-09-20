@@ -1,7 +1,6 @@
 package dev.doctor4t.trainmurdermystery.game;
 
 import com.google.common.collect.Lists;
-import dev.doctor4t.trainmurdermystery.TMM;
 import dev.doctor4t.trainmurdermystery.cca.PlayerMoodComponent;
 import dev.doctor4t.trainmurdermystery.cca.TMMComponents;
 import dev.doctor4t.trainmurdermystery.cca.WorldGameComponent;
@@ -11,7 +10,6 @@ import dev.doctor4t.trainmurdermystery.index.TMMEntities;
 import dev.doctor4t.trainmurdermystery.index.TMMItems;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.pattern.CachedBlockPosition;
 import net.minecraft.component.ComponentMap;
@@ -65,26 +63,16 @@ public class TMMGameLoop {
             gameComponent = TMMComponents.GAME.get(serverWorld);
             trainComponent = TMMComponents.TRAIN.get(serverWorld);
 
-            // fade in and start game
-            if (!gameComponent.isRunning() && gameComponent.getFadeIn() >= 0) {
-                gameComponent.setFadeIn(gameComponent.getFadeIn()+1);
+            // fade and start / stop game
+            if (gameComponent.getGameStatus() == WorldGameComponent.GameStatus.STARTING || gameComponent.getGameStatus() == WorldGameComponent.GameStatus.STOPPING) {
+                gameComponent.setFade(gameComponent.getFade()+1);
 
-                if (gameComponent.getFadeIn() >= TMMGameConstants.FADE_TIME) {
-                    initializeGame(serverWorld);
+                if (gameComponent.getFade() >= TMMGameConstants.FADE_TIME + TMMGameConstants.FADE_PAUSE) {
+                    if (gameComponent.getGameStatus() == WorldGameComponent.GameStatus.STARTING) initializeGame(serverWorld);
+                    if (gameComponent.getGameStatus() == WorldGameComponent.GameStatus.STOPPING) finalizeGame(serverWorld);
                 }
-            } else {
-                gameComponent.setFadeIn(gameComponent.getFadeIn()-1);
-            }
-
-            // fade out and stop game
-            if (gameComponent.isRunning() && gameComponent.getFadeOut() >= 0) {
-                gameComponent.setFadeOut(gameComponent.getFadeOut()+1);
-
-                if (gameComponent.getFadeOut() >= TMMGameConstants.FADE_TIME) {
-                    finalizeGame(serverWorld);
-                }
-            } else {
-                gameComponent.setFadeOut(gameComponent.getFadeOut()-1);
+            } else if (gameComponent.getGameStatus() == WorldGameComponent.GameStatus.ACTIVE || gameComponent.getGameStatus() == WorldGameComponent.GameStatus.INACTIVE) {
+                gameComponent.setFade(gameComponent.getFade()-1);
             }
 
             // spectator limits
@@ -168,16 +156,12 @@ public class TMMGameLoop {
 
     public static void startGame(ServerWorld world) {
         WorldGameComponent component = TMMComponents.GAME.get(world);
-        component.setRunning(false);
-        component.setFadeIn(0);
-        component.setFadeOut(-1);
+        component.setGameStatus(WorldGameComponent.GameStatus.STARTING);
     }
 
     public static void stopGame(ServerWorld world) {
         WorldGameComponent component = TMMComponents.GAME.get(world);
-        component.setRunning(true);
-        component.setFadeOut(0);
-        TMMComponents.GAME.get(world).setFadeIn(-1);
+        component.setGameStatus(WorldGameComponent.GameStatus.STOPPING);
     }
 
     public static void initializeGame(ServerWorld world) {
@@ -205,8 +189,8 @@ public class TMMGameLoop {
 
         // teleport non playing players
         for (ServerPlayerEntity player : world.getPlayers(serverPlayerEntity -> !isPlayerAliveAndSurvival(serverPlayerEntity))) {
-            BlockPos playPos = TMMGameConstants.PLAY_POS;
-            player.requestTeleport(playPos.getX(), playPos.getY(), playPos.getZ());
+            player.changeGameMode(GameMode.SPECTATOR);
+            TMMGameConstants.SPECTATOR_TP.accept(player);
         }
 
         // limit the game to 14 players, put players 15 to n in spectator mode
@@ -309,7 +293,7 @@ public class TMMGameLoop {
             body.discard();
         }
 
-        gameComponent.start();
+        gameComponent.setGameStatus(WorldGameComponent.GameStatus.ACTIVE);
     }
 
     public static void finalizeGame(ServerWorld world) {
@@ -335,7 +319,7 @@ public class TMMGameLoop {
         // reset game component
         var gameComponent = TMMComponents.GAME.get(world);
         gameComponent.resetLists();
-        gameComponent.stop();
+        gameComponent.setGameStatus(WorldGameComponent.GameStatus.INACTIVE);
     }
 
     public static boolean isPlayerEliminated(PlayerEntity player) {
