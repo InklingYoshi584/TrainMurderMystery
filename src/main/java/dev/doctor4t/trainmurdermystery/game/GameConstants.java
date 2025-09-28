@@ -34,6 +34,8 @@ public interface GameConstants {
         ITEM_COOLDOWNS.put(TMMItems.LOCKPICK, getInTicks(2, 0));
         ITEM_COOLDOWNS.put(TMMItems.CROWBAR, getInTicks(3, 0));
         ITEM_COOLDOWNS.put(TMMItems.BODY_BAG, getInTicks(5, 0));
+        ITEM_COOLDOWNS.put(TMMItems.PSYCHO_MODE, getInTicks(5, 0));
+        ITEM_COOLDOWNS.put(TMMItems.BLACKOUT, getInTicks(5, 0));
     }
     int JAMMED_DOOR_TIME = getInTicks(1, 0);
 

@@ -2,6 +2,7 @@ package dev.doctor4t.trainmurdermystery.cca;
 
 import dev.doctor4t.trainmurdermystery.TMM;
 import dev.doctor4t.trainmurdermystery.game.GameConstants;
+import dev.doctor4t.trainmurdermystery.index.TMMItems;
 import dev.doctor4t.trainmurdermystery.index.TMMSounds;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -70,10 +71,12 @@ public class PlayerShopComponent implements AutoSyncedComponent, ServerTickingCo
     }
 
     public static boolean useBlackout(@NotNull PlayerEntity player) {
+        player.getItemCooldownManager().set(TMMItems.BLACKOUT, GameConstants.ITEM_COOLDOWNS.getOrDefault(TMMItems.BLACKOUT, 0));
         return WorldBlackoutComponent.KEY.get(player.getWorld()).triggerBlackout();
     }
 
     public static boolean usePsychoMode(PlayerEntity player) {
+        player.getItemCooldownManager().set(TMMItems.PSYCHO_MODE, GameConstants.ITEM_COOLDOWNS.getOrDefault(TMMItems.PSYCHO_MODE, 0));
         return PlayerPsychoComponent.KEY.get(player).startPsycho();
     }
 
