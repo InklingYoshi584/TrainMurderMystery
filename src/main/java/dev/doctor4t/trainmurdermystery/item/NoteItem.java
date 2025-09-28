@@ -24,7 +24,8 @@ public class NoteItem extends Item implements AdventureUsable {
         super(settings);
     }
 
-    @Override @Environment(EnvType.CLIENT)
+    @Override
+    @Environment(EnvType.CLIENT)
     public TypedActionResult<ItemStack> use(@NotNull World world, PlayerEntity user, Hand hand) {
         if (world.isClient && user.isSneaking()) MinecraftClient.getInstance().setScreen(new NoteScreen());
         return super.use(world, user, hand);

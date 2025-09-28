@@ -8,7 +8,6 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.UUID;
 import java.util.function.UnaryOperator;
 
 public interface TMMDataComponentTypes {

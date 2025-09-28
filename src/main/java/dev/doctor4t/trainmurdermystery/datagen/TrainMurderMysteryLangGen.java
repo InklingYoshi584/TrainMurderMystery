@@ -62,17 +62,17 @@ public class TrainMurderMysteryLangGen extends FabricLanguageProvider {
         builder.add("tip.door.jammed", "This door is jammed and cannot be opened at the moment!");
 
         builder.add("tip.cooldown", "On cooldown: %s");
-        builder.add(TextUtils.getItemTranslationKey(TMMItems.KNIFE)+".tooltip", "Hold for a second and get close to your victim\nAfter a kill, cannot be used for 1 minute\nAttack to knock back / push a player (no cooldown)");
-        builder.add(TextUtils.getItemTranslationKey(TMMItems.REVOLVER)+".tooltip", "All it takes is five pounds of pressure\nDrops if you kill an innocent");
-        builder.add(TextUtils.getItemTranslationKey(TMMItems.GRENADE)+".tooltip", "Explodes on impact once thrown\nGood to clear groups of people\nSingle use, 5 minute cooldown");
-        builder.add(TextUtils.getItemTranslationKey(TMMItems.PSYCHO_MODE)+".tooltip", "Do you like hurting other people?\nHides your identity and allows you to go crazy with a bat for 30s\nActivated instantly upon purchase, 5 minute cooldown");
-        builder.add(TextUtils.getItemTranslationKey(TMMItems.POISON_VIAL)+".tooltip", "Slip in food or drinks to poison the next pickup");
-        builder.add(TextUtils.getItemTranslationKey(TMMItems.SCORPION)+".tooltip", "Slip in a bed to poison the next person looking for a rest");
-        builder.add(TextUtils.getItemTranslationKey(TMMItems.LOCKPICK)+".tooltip", "Use on any locked door to open it (no cooldown)\nSneak-use on a door to jam it for 1 minute\n5 minute cooldown");
-        builder.add(TextUtils.getItemTranslationKey(TMMItems.CROWBAR)+".tooltip", "Use on any door to open it permanently\n3 minute cooldown");
-        builder.add(TextUtils.getItemTranslationKey(TMMItems.BODY_BAG)+".tooltip", "Use on a dead body to bag it up and remove it\nSingle use, 5 minute cooldown");
-        builder.add(TextUtils.getItemTranslationKey(TMMItems.BLACKOUT)+".tooltip", "Turn off all lights aboard for up to 12 seconds\nActivated instantly on purchase, 5 minute cooldown");
-        builder.add(TextUtils.getItemTranslationKey(TMMItems.NOTE)+".tooltip", "Write a message and pin it for others to see\nSneak-use to write a message, then use on a wall or floor to place");
+        builder.add(TextUtils.getItemTranslationKey(TMMItems.KNIFE) + ".tooltip", "Hold for a second and get close to your victim\nAfter a kill, cannot be used for 1 minute\nAttack to knock back / push a player (no cooldown)");
+        builder.add(TextUtils.getItemTranslationKey(TMMItems.REVOLVER) + ".tooltip", "All it takes is five pounds of pressure\nDrops if you kill an innocent");
+        builder.add(TextUtils.getItemTranslationKey(TMMItems.GRENADE) + ".tooltip", "Explodes on impact once thrown\nGood to clear groups of people\nSingle use, 5 minute cooldown");
+        builder.add(TextUtils.getItemTranslationKey(TMMItems.PSYCHO_MODE) + ".tooltip", "Do you like hurting other people?\nHides your identity and allows you to go crazy with a bat for 30s\nActivated instantly upon purchase, 5 minute cooldown");
+        builder.add(TextUtils.getItemTranslationKey(TMMItems.POISON_VIAL) + ".tooltip", "Slip in food or drinks to poison the next pickup");
+        builder.add(TextUtils.getItemTranslationKey(TMMItems.SCORPION) + ".tooltip", "Slip in a bed to poison the next person looking for a rest");
+        builder.add(TextUtils.getItemTranslationKey(TMMItems.LOCKPICK) + ".tooltip", "Use on any locked door to open it (no cooldown)\nSneak-use on a door to jam it for 1 minute\n5 minute cooldown");
+        builder.add(TextUtils.getItemTranslationKey(TMMItems.CROWBAR) + ".tooltip", "Use on any door to open it permanently\n3 minute cooldown");
+        builder.add(TextUtils.getItemTranslationKey(TMMItems.BODY_BAG) + ".tooltip", "Use on a dead body to bag it up and remove it\nSingle use, 5 minute cooldown");
+        builder.add(TextUtils.getItemTranslationKey(TMMItems.BLACKOUT) + ".tooltip", "Turn off all lights aboard for up to 12 seconds\nActivated instantly on purchase, 5 minute cooldown");
+        builder.add(TextUtils.getItemTranslationKey(TMMItems.NOTE) + ".tooltip", "Write a message and pin it for others to see\nSneak-use to write a message, then use on a wall or floor to place");
 
         builder.add("game.win.hitmen", "The hitmen reached their kill count, they win!");
         builder.add("game.win.passengers", "All hitmen were eliminated: the passengers win!");

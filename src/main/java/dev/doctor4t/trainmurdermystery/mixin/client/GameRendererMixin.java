@@ -14,11 +14,14 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(GameRenderer.class)
 public class GameRendererMixin {
-    @Shadow @Final MinecraftClient client;
+    @Shadow
+    @Final
+    MinecraftClient client;
 
     @WrapOperation(method = "shouldRenderBlockOutline", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/PlayerAbilities;allowModifyWorld:Z"))
     public boolean useOnBlock(PlayerAbilities instance, Operation<Boolean> original) {
-        if (this.client.getCameraEntity() instanceof LivingEntity entity && entity.getMainHandStack().getItem() instanceof AdventureUsable) return true;
+        if (this.client.getCameraEntity() instanceof LivingEntity entity && entity.getMainHandStack().getItem() instanceof AdventureUsable)
+            return true;
         return original.call(instance);
     }
 }

@@ -4,18 +4,12 @@ import dev.doctor4t.trainmurdermystery.TMM;
 import dev.doctor4t.trainmurdermystery.cca.PlayerNoteComponent;
 import dev.doctor4t.trainmurdermystery.util.NoteEditPayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.SignBlock;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.TexturedRenderLayers;
-import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.SelectionManager;
-import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
@@ -108,7 +102,7 @@ public class NoteScreen extends Screen {
 
     private void renderSign(@NotNull DrawContext context) {
         context.getMatrices().push();
-        context.getMatrices().translate((float)this.width / 2.0F, 90.0F, 50.0F);
+        context.getMatrices().translate((float) this.width / 2.0F, 90.0F, 50.0F);
         this.renderSignText(context);
         context.getMatrices().pop();
     }

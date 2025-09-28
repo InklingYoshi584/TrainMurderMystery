@@ -86,7 +86,8 @@ public class PlayerPoisonComponent implements AutoSyncedComponent, ServerTicking
     public void serverTick() {
         //if (!TMMComponents.GAME.get(this.player.getWorld()).isRunning()) return;
 
-        if (this.poisonTicks == 0) GameFunctions.killPlayer(this.player, true, player.getWorld().getPlayerByUuid(poisoner));
+        if (this.poisonTicks == 0)
+            GameFunctions.killPlayer(this.player, true, player.getWorld().getPlayerByUuid(poisoner));
         if (this.poisonTicks != -1) this.poisonTicks--;
 
         this.sync();

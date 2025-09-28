@@ -10,9 +10,7 @@
     "ItemEntityMixin",
     "ItemStackMixin",
     "PlayerEntityMixin",
-    "ServerPlayerEntityMixin",
-    "client.LivingEntityMixin",
-    "client.restrictions.DebugHudMixin"
+    "ServerPlayerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
@@ -21,6 +19,7 @@
     "client.AbstractClientPlayerEntityMixin",
     "client.EntityRendererDispatchMixin",
     "client.GameRendererMixin",
+    "client.LivingEntityMixin",
     "client.MinecraftClientMixin",
     "client.PlayerEntityRendererMixin",
     "client.TrueDarknessLightmapTextureManagerMixin",
@@ -29,6 +28,7 @@
     "client.items.HeldItemRendererMixin",
     "client.restrictions.ChatHudMixin",
     "client.restrictions.CreativeInventoryScreenMixin",
+    "client.restrictions.DebugHudMixin",
     "client.restrictions.EntityRendererMixin",
     "client.restrictions.KeyBindingMixin",
     "client.restrictions.KeyboardMixin",

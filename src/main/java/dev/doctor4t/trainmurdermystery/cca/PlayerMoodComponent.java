@@ -4,7 +4,6 @@ import dev.doctor4t.trainmurdermystery.TMM;
 import dev.doctor4t.trainmurdermystery.client.TMMClient;
 import dev.doctor4t.trainmurdermystery.game.GameConstants;
 import dev.doctor4t.trainmurdermystery.index.TMMItems;
-import dev.doctor4t.trainmurdermystery.util.GunDropPayload;
 import dev.doctor4t.trainmurdermystery.util.TaskCompletePayload;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
@@ -62,7 +61,8 @@ public class PlayerMoodComponent implements AutoSyncedComponent, ServerTickingCo
 
     @Override
     public void clientTick() {
-        if (!TMMComponents.GAME.get(this.player.getWorld()).isRunning() || !TMMClient.isPlayerAliveAndInSurvival()) return;
+        if (!TMMComponents.GAME.get(this.player.getWorld()).isRunning() || !TMMClient.isPlayerAliveAndInSurvival())
+            return;
         if (!this.tasks.isEmpty()) this.setMood(this.mood - this.tasks.size() * GameConstants.MOOD_DRAIN);
 
         if (isLowerThanMid()) {
@@ -104,7 +104,8 @@ public class PlayerMoodComponent implements AutoSyncedComponent, ServerTickingCo
             if (task.isFulfilled(this.player)) {
                 removals.add(task.getType());
                 this.setMood(this.mood + GameConstants.MOOD_GAIN);
-                if (this.player instanceof ServerPlayerEntity player) ServerPlayNetworking.send(player, new TaskCompletePayload());
+                if (this.player instanceof ServerPlayerEntity player)
+                    ServerPlayNetworking.send(player, new TaskCompletePayload());
                 shouldSync = true;
             }
         }
