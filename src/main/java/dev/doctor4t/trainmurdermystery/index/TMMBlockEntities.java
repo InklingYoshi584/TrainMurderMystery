@@ -17,6 +17,7 @@ public interface TMMBlockEntities {
     BlockEntityType<BeveragePlateBlockEntity> BEVERAGE_PLATE = registrar.create("beverage_plate", BlockEntityType.Builder.create(BeveragePlateBlockEntity::new, TMMBlocks.FOOD_PLATTER, TMMBlocks.DRINK_TRAY));
     BlockEntityType<TrimmedBedBlockEntity> TRIMMED_BED = registrar.create("trimmed_bed", BlockEntityType.Builder.create(TrimmedBedBlockEntity::create, TMMBlocks.RED_TRIMMED_BED, TMMBlocks.WHITE_TRIMMED_BED));
     BlockEntityType<HornBlockEntity> HORN = registrar.create("horn", BlockEntityType.Builder.create(HornBlockEntity::new, TMMBlocks.HORN));
+    BlockEntityType<ChimneyBlockEntity> CHIMNEY = registrar.create("chimney", BlockEntityType.Builder.create(ChimneyBlockEntity::new, TMMBlocks.CHIMNEY));
 
     static void initialize() {
         registrar.registerEntries();

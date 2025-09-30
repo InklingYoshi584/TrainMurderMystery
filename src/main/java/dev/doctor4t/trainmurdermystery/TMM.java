@@ -157,4 +157,4 @@ public class TMM implements ModInitializer {
 // TODO: add command to reset role weighting
 // TODO: fix name and note render over each other if your cursor sees both
 // TODO: small video tutorial on how to play
-// TODO: sound for when a psycho is hit
+// TODO: Ability to customize time of day for supporters + snow density

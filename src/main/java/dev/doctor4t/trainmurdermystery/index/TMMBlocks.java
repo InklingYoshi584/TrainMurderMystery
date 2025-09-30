@@ -238,6 +238,7 @@ public interface TMMBlocks {
                     .sounds(BlockSoundGroup.CHERRY_WOOD)
                     .breakInstantly()
     ), TMMItems.DECORATION_GROUP);
+    Block CHIMNEY = registrar.createWithItem("chimney", new ChimneyBlock(AbstractBlock.Settings.copy(Blocks.BEDROCK).noCollision()), TMMItems.DECORATION_GROUP);
 
     // Op
     Block BARRIER_PANEL = registrar.createWithItem("barrier_panel", new BarrierPanelBlock(AbstractBlock.Settings.copy(NAVY_STEEL_PANEL).strength(-1.0F, 3600000.8F).nonOpaque().sounds(BlockSoundGroup.STONE)), new Item.Settings().rarity(Rarity.EPIC), ItemGroups.OPERATOR);

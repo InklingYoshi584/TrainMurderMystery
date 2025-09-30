@@ -339,6 +339,7 @@ public class TrainMurderMysteryModelGen extends FabricModelProvider {
         generator.registerBuiltinWithParticle(TMMBlocks.LIGHT_BARRIER, TMMBlocks.LIGHT_BARRIER.asItem());
         generator.registerItemModel(TMMBlocks.LIGHT_BARRIER.asItem());
         generator.registerNorthDefaultHorizontalRotation(TMMBlocks.HORN);
+        generator.registerItemModel(TMMBlocks.CHIMNEY.asItem());
     }
 
     public static final Model SMALL_ITEM = item("small_item", TextureKey.LAYER0);

@@ -2,6 +2,7 @@ package dev.doctor4t.trainmurdermystery.index;
 
 import dev.doctor4t.ratatouille.util.registrar.ParticleTypeRegistrar;
 import dev.doctor4t.trainmurdermystery.TMM;
+import dev.doctor4t.trainmurdermystery.client.particle.BlackSmokeParticle;
 import dev.doctor4t.trainmurdermystery.client.particle.FlashParticle;
 import dev.doctor4t.trainmurdermystery.client.particle.PoisonParticle;
 import dev.doctor4t.trainmurdermystery.client.particle.SnowflakeParticle;
@@ -17,6 +18,7 @@ public interface TMMParticles {
     SimpleParticleType EXPLOSION = (SimpleParticleType) registrar.create("explosion", FabricParticleTypes.simple(true));
     SimpleParticleType BIG_EXPLOSION = (SimpleParticleType) registrar.create("big_explosion", FabricParticleTypes.simple(true));
     SimpleParticleType POISON = (SimpleParticleType) registrar.create("poison", FabricParticleTypes.simple(true));
+    SimpleParticleType BLACK_SMOKE = (SimpleParticleType) registrar.create("black_smoke", FabricParticleTypes.simple(true));
 
     static void initialize() {
         registrar.registerEntries();
@@ -28,5 +30,6 @@ public interface TMMParticles {
         ParticleFactoryRegistry.getInstance().register(EXPLOSION, FlashParticle.ExplosionFactory::new);
         ParticleFactoryRegistry.getInstance().register(BIG_EXPLOSION, FlashParticle.BigExplosionFactory::new);
         ParticleFactoryRegistry.getInstance().register(POISON, PoisonParticle.Factory::new);
+        ParticleFactoryRegistry.getInstance().register(BLACK_SMOKE, BlackSmokeParticle.Factory::new);
     }
 }
