@@ -16,6 +16,7 @@ import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class GameRoundEndComponent implements AutoSyncedComponent {
     public static final ComponentKey<GameRoundEndComponent> KEY = ComponentRegistry.getOrCreate(TMM.id("roundend"), GameRoundEndComponent.class);
@@ -47,6 +48,19 @@ public class GameRoundEndComponent implements AutoSyncedComponent {
         }
         this.winStatus = winStatus;
         this.sync();
+    }
+
+    public boolean didWin(UUID uuid) {
+        if (GameFunctions.WinStatus.NONE == this.winStatus) return false;
+        for (var detail : this.players) {
+            if (!detail.player.getId().equals(uuid)) continue;
+            return switch (this.winStatus) {
+                case KILLERS -> detail.role == RoleAnnouncementText.KILLER;
+                case PASSENGERS, TIME -> detail.role != RoleAnnouncementText.KILLER;
+                default -> false;
+            };
+        }
+        return false;
     }
 
     public List<RoundEndData> getPlayers() {
