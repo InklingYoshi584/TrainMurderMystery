@@ -137,20 +137,21 @@ public class GameFunctions {
                 itemCooldownManager.set(TMMItems.DERRINGER, cooldown);
                 itemCooldownManager.set(TMMItems.KNIFE, cooldown);
 
+                player.giveItemStack(new ItemStack(TMMItems.CROWBAR));
                 player.giveItemStack(derringer);
                 player.giveItemStack(knife);
-            }
-        }
 
-        if (isMurder) {
+                ServerPlayNetworking.send(player, new AnnounceWelcomePayload(RoleAnnouncementText.LOOSE_END.ordinal(), -1, -1));
+            }
+        } else if (isMurder) {
             var killerCount = assignRolesAndGetKillerCount(world, players, gameComponent);
 
             for (var player : players) {
                 ServerPlayNetworking.send(player, new AnnounceWelcomePayload((gameComponent.isKiller(player) ? RoleAnnouncementText.KILLER : gameComponent.isVigilante(player) ? RoleAnnouncementText.VIGILANTE : RoleAnnouncementText.CIVILIAN).ordinal(), killerCount, players.size() - killerCount));
             }
-
-            gameComponent.sync();
         }
+
+        gameComponent.sync();
     }
 
     private static int assignRolesAndGetKillerCount(@NotNull ServerWorld world, @NotNull List<ServerPlayerEntity> players, GameWorldComponent gameComponent) {

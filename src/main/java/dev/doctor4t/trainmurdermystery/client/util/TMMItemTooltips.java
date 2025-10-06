@@ -19,6 +19,16 @@ public class TMMItemTooltips {
 
     public static void addTooltips() {
         ItemTooltipCallback.EVENT.register((itemStack, tooltipContext, tooltipType, tooltipList) -> {
+            addCooldownText(TMMItems.KNIFE, tooltipList, itemStack);
+            addCooldownText(TMMItems.REVOLVER, tooltipList, itemStack);
+            addCooldownText(TMMItems.DERRINGER, tooltipList, itemStack);
+            addCooldownText(TMMItems.GRENADE, tooltipList, itemStack);
+            addCooldownText(TMMItems.LOCKPICK, tooltipList, itemStack);
+            addCooldownText(TMMItems.CROWBAR, tooltipList, itemStack);
+            addCooldownText(TMMItems.BODY_BAG, tooltipList, itemStack);
+            addCooldownText(TMMItems.PSYCHO_MODE, tooltipList, itemStack);
+            addCooldownText(TMMItems.BLACKOUT, tooltipList, itemStack);
+
             addTooltipForItem(TMMItems.KNIFE, itemStack, tooltipList);
             addTooltipForItem(TMMItems.REVOLVER, itemStack, tooltipList);
             addTooltipForItem(TMMItems.DERRINGER, itemStack, tooltipList);
@@ -32,16 +42,6 @@ public class TMMItemTooltips {
             addTooltipForItem(TMMItems.BODY_BAG, itemStack, tooltipList);
             addTooltipForItem(TMMItems.BLACKOUT, itemStack, tooltipList);
             addTooltipForItem(TMMItems.NOTE, itemStack, tooltipList);
-
-            addCooldownText(TMMItems.KNIFE, tooltipList, itemStack);
-            addCooldownText(TMMItems.REVOLVER, tooltipList, itemStack);
-            addCooldownText(TMMItems.DERRINGER, tooltipList, itemStack);
-            addCooldownText(TMMItems.GRENADE, tooltipList, itemStack);
-            addCooldownText(TMMItems.LOCKPICK, tooltipList, itemStack);
-            addCooldownText(TMMItems.CROWBAR, tooltipList, itemStack);
-            addCooldownText(TMMItems.BODY_BAG, tooltipList, itemStack);
-            addCooldownText(TMMItems.PSYCHO_MODE, tooltipList, itemStack);
-            addCooldownText(TMMItems.BLACKOUT, tooltipList, itemStack);
         });
     }
 

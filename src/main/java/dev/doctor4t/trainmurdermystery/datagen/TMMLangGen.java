@@ -57,6 +57,10 @@ public class TMMLangGen extends FabricLanguageProvider {
         builder.add("announcement.win.civilian", "Passengers Win!");
         builder.add("announcement.win.vigilante", "Passengers Win!");
         builder.add("announcement.win.killer", "Killers Win!");
+        builder.add("announcement.loose_ends.welcome", "Welcome aboard... Loose End.");
+        builder.add("announcement.loose_ends.premise", "Everybody on the train has a derringer and a knife.");
+        builder.add("announcement.loose_ends.goal", "Tie all loose ends before they tie you. Good luck.");
+        builder.add("announcement.loose_ends.winner", "%s Wins!");
 
         builder.add("tip.letter.name", "Dear %s, welcome aboard the Harpy Express!");
         builder.add("tip.letter.room", "Please find attached your ticket as well as the key for accessing");
@@ -87,7 +91,7 @@ public class TMMLangGen extends FabricLanguageProvider {
         builder.add(TextUtils.getItemTranslationKey(TMMItems.KNIFE) + ".tooltip", "Right-click, hold for a second and get close to your victim\nAfter a kill, cannot be used for 1 minute\nAttack to knock back / push a player (no cooldown)");
         builder.add(TextUtils.getItemTranslationKey(TMMItems.REVOLVER) + ".tooltip", "Point, right-click and shoot\nDrops if you kill an innocent");
         builder.add(TextUtils.getItemTranslationKey(TMMItems.DERRINGER) + ".tooltip", "Point, right-click and shoot\nCan only be shot once, so make it count!\nShot is replenished after a kill");
-        builder.add(TextUtils.getItemTranslationKey(TMMItems.GRENADE) + ".tooltip", "Right-click to throw, explodes on impact\nDoes not affect killers, good to clear groups of people\nSingle use, 5 minute cooldown");
+        builder.add(TextUtils.getItemTranslationKey(TMMItems.GRENADE) + ".tooltip", "Right-click to throw, explodes on impact\nGood to clear groups of people, but be wary of the blast radius!\nSingle use, 5 minute cooldown");
         builder.add(TextUtils.getItemTranslationKey(TMMItems.PSYCHO_MODE) + ".tooltip", "\"Do you like hurting other people?\"\nHides your identity and allows you to go crazy with a bat for 30 seconds\nBat kills on full swing and cannot be unselected for the duration of the ability\nActivated instantly upon purchase, 5 minute cooldown");
         builder.add(TextUtils.getItemTranslationKey(TMMItems.POISON_VIAL) + ".tooltip", "Slip in food or drinks to poison the next pickup");
         builder.add(TextUtils.getItemTranslationKey(TMMItems.FIRECRACKER) + ".tooltip", "Detonates 15 seconds after being placed on ground\nGood to simulate gunshots and lure people");

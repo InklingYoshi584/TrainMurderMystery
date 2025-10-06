@@ -12,7 +12,8 @@ public enum RoleAnnouncementText {
     BLANK(0xFFFFFF),
     CIVILIAN(0x36E51B),
     VIGILANTE(0x1B8AE5),
-    KILLER(0xC13838);
+    KILLER(0xC13838),
+    LOOSE_END(0xC13838);
 
     public final int colour;
     public final Text roleText;

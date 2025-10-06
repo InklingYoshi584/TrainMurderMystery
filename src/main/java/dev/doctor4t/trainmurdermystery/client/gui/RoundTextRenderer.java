@@ -35,20 +35,32 @@ public class RoundTextRenderer {
 
     @SuppressWarnings("IntegerDivisionInFloatingPointContext")
     public static void renderHud(TextRenderer renderer, ClientPlayerEntity player, @NotNull DrawContext context) {
+        boolean isLooseEnds = TMMComponents.GAME.get(player.getWorld()).getGameMode() == GameWorldComponent.GameMode.LOOSE_ENDS;
+
         if (welcomeTime > 0) {
             context.getMatrices().push();
             context.getMatrices().translate(context.getScaledWindowWidth() / 2f, context.getScaledWindowHeight() / 2f + 3.5, 0);
             context.getMatrices().push();
             context.getMatrices().scale(2.6f, 2.6f, 1f);
-            if (welcomeTime <= 180) context.drawTextWithShadow(renderer, role.welcomeText, -renderer.getWidth(role.welcomeText) / 2, -12, 0xFFFFFF);
+            int color = isLooseEnds ? 0x9F0000 : 0xFFFFFF;
+            if (welcomeTime <= 180) {
+                Text welcomeText = isLooseEnds ? Text.translatable("announcement.loose_ends.welcome") : role.welcomeText;
+                context.drawTextWithShadow(renderer, welcomeText, -renderer.getWidth(welcomeText) / 2, -12, color);
+            }
             context.getMatrices().pop();
             context.getMatrices().push();
             context.getMatrices().scale(1.2f, 1.2f, 1f);
-            if (welcomeTime <= 120) context.drawTextWithShadow(renderer, role.premiseText.apply(killers), -renderer.getWidth(role.premiseText.apply(killers)) / 2, 0, 0xFFFFFF);
+            if (welcomeTime <= 120) {
+                Text premiseText = isLooseEnds ? Text.translatable("announcement.loose_ends.premise") : role.premiseText.apply(killers);
+                context.drawTextWithShadow(renderer, premiseText, -renderer.getWidth(premiseText) / 2, 0, color);
+            }
             context.getMatrices().pop();
             context.getMatrices().push();
             context.getMatrices().scale(1f, 1f, 1f);
-            if (welcomeTime <= 60) context.drawTextWithShadow(renderer, role.goalText.apply(targets), -renderer.getWidth(role.goalText.apply(targets)) / 2, 14, 0xFFFFFF);
+            if (welcomeTime <= 60) {
+                Text goalText = isLooseEnds ? Text.translatable("announcement.loose_ends.goal") : role.goalText.apply(targets);
+                context.drawTextWithShadow(renderer, goalText, -renderer.getWidth(goalText) / 2, 14, color);
+            }
             context.getMatrices().pop();
             context.getMatrices().pop();
         }
@@ -123,7 +135,7 @@ public class RoundTextRenderer {
     }
 
     public static void tick() {
-        if (MinecraftClient.getInstance().world != null && TMMComponents.GAME.get(MinecraftClient.getInstance().world).getGameMode() == GameWorldComponent.GameMode.MURDER) {
+        if (MinecraftClient.getInstance().world != null && TMMComponents.GAME.get(MinecraftClient.getInstance().world).getGameMode() != GameWorldComponent.GameMode.DISCOVERY) {
             ClientPlayerEntity player = MinecraftClient.getInstance().player;
             if (welcomeTime > 0) {
                 switch (welcomeTime) {
