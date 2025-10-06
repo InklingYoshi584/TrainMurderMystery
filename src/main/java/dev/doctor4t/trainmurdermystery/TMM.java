@@ -176,6 +176,7 @@ public class TMM implements ModInitializer {
 // TORECORD: Fix role weighting
 // TORECORD: Make killers have to kill all innocents
 // TORECORD: Notes for some / every civilian
+// TORECORD: Grenades kill killers
 // TODO: bug: the screen never fades back in after the game ends, and then the second time the voice never connects, needing two relogs (not sure how to fix that)
 // TODO: Final gamemode, loose ends:
 // - Everyone spawns on the train with nothing but a crowbar
@@ -186,4 +187,3 @@ public class TMM implements ModInitializer {
 // POST VIDEO
 // TORECORD: Ability to customize time of day for supporters + snow density
 // TODO: Watermark?
-// TODO: Grenades kill killers

@@ -53,7 +53,7 @@ public class TMMLangGen extends FabricLanguageProvider {
         builder.add("announcement.goal.killer", "Eliminate a passenger to succeed, before time runs out.");
         builder.add("announcement.goals.civilian", "Stay safe and survive till the end of the ride.");
         builder.add("announcement.goals.vigilante", "Eliminate any murderers and protect the civilians.");
-        builder.add("announcement.goals.killer", "Eliminate %s passengers to succeed, before time runs out.");
+        builder.add("announcement.goals.killer", "Eliminate all civilians before time runs out.");
         builder.add("announcement.win.civilian", "Passengers Win!");
         builder.add("announcement.win.vigilante", "Passengers Win!");
         builder.add("announcement.win.killer", "Killers Win!");
