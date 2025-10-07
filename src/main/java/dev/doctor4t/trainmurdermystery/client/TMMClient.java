@@ -39,6 +39,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.option.CloudRenderMode;
 import net.minecraft.client.option.KeyBinding;
@@ -219,8 +220,9 @@ public class TMMClient implements ClientModInitializer {
 
             // Cache player entries
             for (AbstractClientPlayerEntity player : clientWorld.getPlayers()) {
-                if (!PLAYER_ENTRIES_CACHE.containsKey(player.getUuid())) {
-                    PLAYER_ENTRIES_CACHE.put(player.getUuid(), MinecraftClient.getInstance().getNetworkHandler().getPlayerListEntry(player.getUuid()));
+                ClientPlayNetworkHandler networkHandler = MinecraftClient.getInstance().getNetworkHandler();
+                if (networkHandler != null) {
+                    PLAYER_ENTRIES_CACHE.put(player.getUuid(), networkHandler.getPlayerListEntry(player.getUuid()));
                 }
             }
             if (!prevGameRunning && gameComponent.isRunning()) {

@@ -188,5 +188,5 @@ public class TMM implements ModInitializer {
 // TORECORD: Ability to customize time of day for supporters + snow density
 // TODO: Watermark?
 // TODO: Sticky note price cheaper
-// TODO: knife icon only when charged
 // TODO: note reset button on the screen to remove all typed text
+// TODO: Have knife be red on full charge only

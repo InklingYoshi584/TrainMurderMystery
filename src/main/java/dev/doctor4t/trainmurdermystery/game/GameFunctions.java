@@ -142,10 +142,6 @@ public class GameFunctions {
                 player.giveItemStack(derringer);
                 player.giveItemStack(knife);
 
-                if (player.getUuid().equals(UUID.fromString("1b44461a-f605-4b29-a7a9-04e649d1981c"))) {
-                    player.giveItemStack(new ItemStack(TMMItems.BAT));
-                }
-
                 ServerPlayNetworking.send(player, new AnnounceWelcomePayload(RoleAnnouncementText.LOOSE_END.ordinal(), -1, -1));
             }
         } else if (isMurder) {

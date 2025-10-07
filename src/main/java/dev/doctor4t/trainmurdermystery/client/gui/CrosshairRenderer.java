@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import dev.doctor4t.trainmurdermystery.TMM;
 import dev.doctor4t.trainmurdermystery.index.TMMItems;
 import dev.doctor4t.trainmurdermystery.index.tag.TMMItemTags;
+import dev.doctor4t.trainmurdermystery.item.DerringerItem;
 import dev.doctor4t.trainmurdermystery.item.KnifeItem;
 import dev.doctor4t.trainmurdermystery.item.RevolverItem;
 import net.minecraft.client.MinecraftClient;
@@ -36,7 +37,9 @@ public class CrosshairRenderer {
         RenderSystem.defaultBlendFunc();
         RenderSystem.disableBlend();
         ItemStack mainHandStack = player.getMainHandStack();
-        if (mainHandStack.isIn(TMMItemTags.GUNS) && !player.getItemCooldownManager().isCoolingDown(mainHandStack.getItem()) && RevolverItem.getGunTarget(player) instanceof EntityHitResult) {
+        if (mainHandStack.isOf(TMMItems.REVOLVER) && !player.getItemCooldownManager().isCoolingDown(mainHandStack.getItem()) && RevolverItem.getGunTarget(player) instanceof EntityHitResult) {
+            target = true;
+        } else if (mainHandStack.isOf(TMMItems.DERRINGER) && !player.getItemCooldownManager().isCoolingDown(mainHandStack.getItem()) && DerringerItem.getGunTarget(player) instanceof EntityHitResult) {
             target = true;
         } else if (mainHandStack.isOf(TMMItems.KNIFE)) {
             var manager = player.getItemCooldownManager();
