@@ -50,10 +50,12 @@ public abstract class WorldRendererMixin {
 
     @WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/BackgroundRenderer;applyFog(Lnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/BackgroundRenderer$FogType;FZF)V"))
     public void tmm$applyBlizzardFog(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, float tickDelta, Operation<Void> original) {
-        if (TMMClient.isTrainMoving()) {
-            tmm$doFog(0, 130);
-        } else {
-            tmm$doFog(0, 200);
+        if (TMMClient.trainComponent.isFoggy()) {
+            if (TMMClient.isTrainMoving()) {
+                tmm$doFog(0, 130);
+            } else {
+                tmm$doFog(0, 200);
+            }
         }
     }
 
