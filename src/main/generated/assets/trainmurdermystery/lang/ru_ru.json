@@ -273,7 +273,7 @@
   "game.win.passengers": "Убийцы были устранены: пассажиры победили!",
   "game.win.time": "Время вышло: пассажиры победили!",
   "item.trainmurdermystery.bat": "Бита",
-  "item.trainmurdermystery.blackout": "Блекаут",
+  "item.trainmurdermystery.blackout": "Темнота",
   "item.trainmurdermystery.blackout.tooltip": "Выключает весь свет на борту на 15-20 секунд\nИспользуйте инстинкт [левый Alt], чтобы видеть цели в темноте\nАктивируется сразу при покупке, откат 5 минут",
   "item.trainmurdermystery.body_bag": "Мешок для Трупов",
   "item.trainmurdermystery.body_bag.tooltip": "Используйте на трупе чтобы его убрать\nРазовое использование, откат 5 секунд",
