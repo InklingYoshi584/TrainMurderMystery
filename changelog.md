@@ -1,4 +1,10 @@
 ------------------------------------------------------
+The Last Voyage of the Harpy Express 1.1.1 - 1.21.1
+------------------------------------------------------
+- Added a config and ultra performance config option that disables the scenery and locks the render distance to 2 chunks
+- Fixed the note clear button missing text
+
+------------------------------------------------------
 The Last Voyage of the Harpy Express 1.1 - 1.21.1
 ------------------------------------------------------
 - Added Sodium and Iris compatibility thanks to PunIsIntendeds! 🐀❤️
