@@ -1,4 +1,10 @@
 ------------------------------------------------------
+The Last Voyage of the Harpy Express 1.1.5 - 1.21.1
+------------------------------------------------------
+- Added a French translation, thanks to LeWarpy 🐀❤️
+- Added a Turkish translation, thanks to rjjr35379-hue 🐀❤️
+
+------------------------------------------------------
 The Last Voyage of the Harpy Express 1.1.4 - 1.21.1
 ------------------------------------------------------
 - Fixed lobby not being visible in ultra performance mode
