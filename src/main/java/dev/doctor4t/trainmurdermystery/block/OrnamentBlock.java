@@ -2,18 +2,25 @@ package dev.doctor4t.trainmurdermystery.block;
 
 import com.mojang.serialization.MapCodec;
 import dev.doctor4t.trainmurdermystery.block.property.OrnamentShape;
+import dev.doctor4t.trainmurdermystery.index.TMMBlocks;
 import dev.doctor4t.trainmurdermystery.index.TMMProperties;
 import dev.doctor4t.trainmurdermystery.util.BlockUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FacingBlock;
 import net.minecraft.block.ShapeContext;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
+import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.EnumProperty;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec2f;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
@@ -76,6 +83,19 @@ public class OrnamentBlock extends FacingBlock {
             case UP -> GlassPanelBlock.UP_COLLISION_SHAPE;
             case DOWN -> GlassPanelBlock.DOWN_COLLISION_SHAPE;
         };
+    }
+
+    @Override
+    protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+        if (!player.shouldCancelInteraction() && !player.getMainHandStack().isOf(this.asItem())) {
+            Direction dir = state.get(FACING);
+            BlockPos behindBlockPos = pos.subtract(new Vec3i(dir.getOffsetX(), dir.getOffsetY(), dir.getOffsetZ()));
+            BlockState blockBehindOrnament = world.getBlockState(behindBlockPos);
+            if (blockBehindOrnament.getBlock() instanceof NeonPillarBlock) {
+                return ((NeonPillarBlock) blockBehindOrnament.getBlock()).onUse(blockBehindOrnament, world, behindBlockPos, player, hit.withBlockPos(behindBlockPos));
+            }
+        }
+        return super.onUse(state, world, pos, player, hit);
     }
 
     @Override
