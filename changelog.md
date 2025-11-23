@@ -1,7 +1,7 @@
 ------------------------------------------------------
 The Last Voyage of the Harpy Express 1.1.5 - 1.21.1
 ------------------------------------------------------
-- Added a French translation, thanks to LeWarpy 🐀❤️
+- Fixed a crash that could happen on server start
 - Added a Turkish translation, thanks to rjjr35379-hue 🐀❤️
 
 ------------------------------------------------------
