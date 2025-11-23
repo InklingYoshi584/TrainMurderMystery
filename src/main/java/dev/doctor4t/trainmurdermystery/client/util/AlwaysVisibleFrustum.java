@@ -21,7 +21,7 @@ public class AlwaysVisibleFrustum extends Frustum {
             if (TMMConfig.ultraPerfMode) {
                 return super.isVisible(box) && box.getCenter().getY() < 148 && box.getCenter().getY() > 112;
             }
-            
+
             return box.getCenter().getY() < 148 && box.getCenter().getY() > -64;
         }
 
