@@ -15,6 +15,7 @@ The Last Voyage of the Harpy Express 1.1.4 - 1.21.1
 - Added a new API function to allow custom roles to use Killer features, thanks to agmass 🐀❤️
 - Added a Chinese translation, thanks to ZeroIcceBear 🐀❤️
 - Added a Spanish (Spain) translation, thanks to TyricSatyric 🐀❤️
+- Added Ukrainian translation, thanks to MagnarIUK 🐀❤️
 - Updated Russian translation, thanks to TheBendy42 🐀❤️
 
 ------------------------------------------------------
