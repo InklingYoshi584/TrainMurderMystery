@@ -339,12 +339,12 @@
   "subtitles.block.door.toggle": "Door operates",
   "subtitles.item.crowbar.pry": "Feszitővas kinyit egy ajtót",
   
-  "task.drink": "kénne italozni",
-  "task.eat": "kénne ételt enni.",
+  "task.drink": "kéne italozni",
+  "task.eat": "kéne ételt enni.",
   "task.fake": "Úgy csinálhatnád mitha ha ",
   "task.feel": "Úgy érzed hogy ",
-  "task.outside": "kénne szerezni friss levegőt",
-  "task.sleep": "kénne egy kevés alvás.",
+  "task.outside": "kéne szerezni friss levegőt",
+  "task.sleep": "kéne egy kevés alvás.",
   
   "tip.cooldown": "Újratöltés: %s",
   "tip.derringer.used": "Használt: nem lehet lönni szerez meg egy őllést!", 
