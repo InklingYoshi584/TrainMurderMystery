@@ -343,5 +343,8 @@
   "trainmurdermystery.midnightconfig.disableScreenShake": "Отключить дрожание экрана",
   "trainmurdermystery.midnightconfig.title": "Последний рейс Harpy Express - Настройки",
   "trainmurdermystery.midnightconfig.ultraPerfMode": "Режим ультра производительности",
-  "trainmurdermystery.midnightconfig.ultraPerfMode.tooltip": "Отключает визуальные эффекты сцены для лучшей производительности. Понижает дальность прорисовки до 2-ух."
+  "trainmurdermystery.midnightconfig.ultraPerfMode.tooltip": "Отключает визуальные эффекты сцены для лучшей производительности. Понижает дальность прорисовки до 2-ух.",
+  "modmenu.nameTranslation.trainmurdermystery": "Последний рейс Harpy Express",
+  "modmenu.summaryTranslation.trainmurdermystery": "Социальная игра-детектив по расследованию убийств в поезде.",
+  "modmenu.descriptionTranslation.trainmurdermystery": "Социальная игра-детектив по расследованию убийств в поезде."
 }
