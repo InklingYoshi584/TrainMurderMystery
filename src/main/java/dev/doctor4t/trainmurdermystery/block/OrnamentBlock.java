@@ -2,7 +2,6 @@ package dev.doctor4t.trainmurdermystery.block;
 
 import com.mojang.serialization.MapCodec;
 import dev.doctor4t.trainmurdermystery.block.property.OrnamentShape;
-import dev.doctor4t.trainmurdermystery.index.TMMBlocks;
 import dev.doctor4t.trainmurdermystery.index.TMMProperties;
 import dev.doctor4t.trainmurdermystery.util.BlockUtils;
 import net.minecraft.block.Block;
@@ -12,10 +11,8 @@ import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
-import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
