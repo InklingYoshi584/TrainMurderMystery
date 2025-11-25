@@ -32,6 +32,7 @@ public class GrenadeEntity extends ThrownItemEntity {
     protected void onCollision(HitResult hitResult) {
         super.onCollision(hitResult);
         if (this.getWorld() instanceof ServerWorld world) {
+            // Consider sending this in one payload to reduce packets sent - SkyNotTheLimit
             world.playSound(null, this.getBlockPos(), TMMSounds.ITEM_GRENADE_EXPLODE, SoundCategory.PLAYERS, 5f, 1f + this.getRandom().nextFloat() * .1f - .05f);
             world.spawnParticles(TMMParticles.BIG_EXPLOSION, this.getX(), this.getY() + .1f, this.getZ(), 1, 0, 0, 0, 0);
             world.spawnParticles(ParticleTypes.SMOKE, this.getX(), this.getY() + .1f, this.getZ(), 100, 0, 0, 0, .2f);
