@@ -85,13 +85,14 @@ public class GameFunctions {
     }
 
     public static void startGame(ServerWorld world, GameMode gameMode, int time) {
-        GameWorldComponent component = GameWorldComponent.KEY.get(world);
-        int playerCount = Math.toIntExact(world.getPlayers().stream().filter(serverPlayerEntity -> (GameConstants.READY_AREA.contains(serverPlayerEntity.getPos()))).count());
-        component.setGameMode(gameMode);
+        GameWorldComponent game = GameWorldComponent.KEY.get(world);
+        AreasWorldComponent areas = AreasWorldComponent.KEY.get(world);
+        int playerCount = Math.toIntExact(world.getPlayers().stream().filter(serverPlayerEntity -> (areas.getReadyArea().contains(serverPlayerEntity.getPos()))).count());
+        game.setGameMode(gameMode);
         GameTimeComponent.KEY.get(world).setResetTime(time);
 
         if (playerCount >= gameMode.minPlayerCount) {
-            component.setGameStatus(GameWorldComponent.GameStatus.STARTING);
+            game.setGameStatus(GameWorldComponent.GameStatus.STARTING);
         } else {
             for (ServerPlayerEntity player : world.getPlayers()) {
                 player.sendMessage(Text.translatable("game.start_error.not_enough_players", gameMode.minPlayerCount), true);
@@ -115,6 +116,8 @@ public class GameFunctions {
     }
 
     private static void baseInitialize(ServerWorld serverWorld, GameWorldComponent gameComponent, List<ServerPlayerEntity> players) {
+        AreasWorldComponent areas = AreasWorldComponent.KEY.get(serverWorld);
+
         TrainWorldComponent.KEY.get(serverWorld).reset();
         WorldBlackoutComponent.KEY.get(serverWorld).reset();
 
@@ -136,14 +139,16 @@ public class GameFunctions {
         // teleport players to play area
         for (ServerPlayerEntity player : players) {
             player.changeGameMode(net.minecraft.world.GameMode.ADVENTURE);
-            Vec3d pos = player.getPos().add(GameConstants.PLAY_OFFSET);
+            Vec3d pos = player.getPos().add(areas.getPlayAreaOffset());
             player.requestTeleport(pos.getX(), pos.getY() + 1, pos.getZ());
         }
 
         // teleport non playing players
         for (ServerPlayerEntity player : serverWorld.getPlayers(serverPlayerEntity -> !players.contains(serverPlayerEntity))) {
             player.changeGameMode(net.minecraft.world.GameMode.SPECTATOR);
-            GameConstants.SPECTATOR_TP.accept(player);
+
+            AreasWorldComponent.PosWithOrientation spectatorSpawnPos = areas.getSpectatorSpawnPos();
+            player.teleport(serverWorld, spectatorSpawnPos.pos.getX(), spectatorSpawnPos.pos.getY(), spectatorSpawnPos.pos.getZ(), spectatorSpawnPos.yaw, spectatorSpawnPos.pitch);
         }
 
         // clear items, clear previous game data
@@ -215,7 +220,8 @@ public class GameFunctions {
     }
 
     private static List<ServerPlayerEntity> getReadyPlayerList(ServerWorld serverWorld) {
-        List<ServerPlayerEntity> players = serverWorld.getPlayers(serverPlayerEntity -> GameConstants.READY_AREA.contains(serverPlayerEntity.getPos()));
+        AreasWorldComponent areas =AreasWorldComponent.KEY.get(serverWorld);
+        List<ServerPlayerEntity> players = serverWorld.getPlayers(serverPlayerEntity -> areas.getReadyArea().contains(serverPlayerEntity.getPos()));
         return players;
     }
 
@@ -259,7 +265,8 @@ public class GameFunctions {
 
         player.changeGameMode(net.minecraft.world.GameMode.ADVENTURE);
         player.wakeUp();
-        var teleportTarget = new TeleportTarget(player.getServerWorld(), GameConstants.SPAWN_POS, Vec3d.ZERO, 90, 0, TeleportTarget.NO_OP);
+        AreasWorldComponent.PosWithOrientation spawnPos = AreasWorldComponent.KEY.get(player.getWorld()).getSpawnPos();
+        var teleportTarget = new TeleportTarget(player.getServerWorld(), spawnPos.pos, Vec3d.ZERO, spawnPos.yaw, spawnPos.pitch, TeleportTarget.NO_OP);
         player.teleportTo(teleportTarget);
     }
 
@@ -376,10 +383,11 @@ public class GameFunctions {
     // returns whether another reset should be attempted
     public static boolean tryResetTrain(ServerWorld serverWorld) {
         if (serverWorld.getServer().getOverworld().equals(serverWorld)) {
-            BlockPos backupMinPos = BlockPos.ofFloored(GameConstants.BACKUP_TRAIN_LOCATION.getMinPos());
-            BlockPos backupMaxPos = BlockPos.ofFloored(GameConstants.BACKUP_TRAIN_LOCATION.getMaxPos());
+            AreasWorldComponent areas = AreasWorldComponent.KEY.get(serverWorld);
+            BlockPos backupMinPos = BlockPos.ofFloored(areas.getResetTemplateArea().getMinPos());
+            BlockPos backupMaxPos = BlockPos.ofFloored(areas.getResetTemplateArea().getMaxPos());
             BlockBox backupTrainBox = BlockBox.create(backupMinPos, backupMaxPos);
-            BlockPos trainMinPos = BlockPos.ofFloored(GameConstants.TRAIN_LOCATION.getMinPos());
+            BlockPos trainMinPos = BlockPos.ofFloored(areas.getResetPasteArea().getMinPos());
             BlockPos trainMaxPos = trainMinPos.add(backupTrainBox.getDimensions());
             BlockBox trainBox = BlockBox.create(trainMinPos, trainMaxPos);
 
@@ -484,7 +492,8 @@ public class GameFunctions {
 
     public static int getReadyPlayerCount(World world) {
         var players = world.getPlayers();
-        return Math.toIntExact(players.stream().filter(p -> GameConstants.READY_AREA.contains(p.getPos())).count());
+        AreasWorldComponent areas = AreasWorldComponent.KEY.get(world);
+        return Math.toIntExact(players.stream().filter(p -> areas.getReadyArea().contains(p.getPos())).count());
     }
 
     public enum WinStatus {
