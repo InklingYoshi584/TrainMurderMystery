@@ -71,8 +71,6 @@ public interface GameConstants {
     int ITEM_PSYCHOSIS_REROLL_TIME = 200;
 
     // Shop Variables
-
-    // Now accessible to the people (me)
     List<ShopEntry> SHOP_ENTRIES = Util.make(new ArrayList<>(), entries -> {
         entries.add(new ShopEntry(TMMItems.KNIFE.getDefaultStack(), 100, ShopEntry.Type.WEAPON));
         entries.add(new ShopEntry(TMMItems.REVOLVER.getDefaultStack(), 300, ShopEntry.Type.WEAPON));
