@@ -186,7 +186,7 @@ public class PlayerMoodComponent implements AutoSyncedComponent, ServerTickingCo
     public void setMood(float mood) {
         Role role = GameWorldComponent.KEY.get(this.player.getWorld()).getRole(player);
 
-        if (role == null || role.getMoodType() == Role.MoodType.REAL) {
+        if (role != null && role.getMoodType() == Role.MoodType.REAL) {
             this.mood = Math.clamp(mood, 0, 1);
         } else {
             this.mood = 1;

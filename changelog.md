@@ -1,4 +1,10 @@
 ------------------------------------------------------
+The Last Voyage of the Harpy Express 1.2.1 - 1.21.1
+------------------------------------------------------
+- Fixed internal server error when trying to join a server once a game is already running
+- Players in adventure / survival that do not have a role (e.g. if they were not there at the start of the game / joined the server while a game is running) now get automatically put in spectator
+
+------------------------------------------------------
 The Last Voyage of the Harpy Express 1.2 - 1.21.1
 ------------------------------------------------------
 - Completely rewrote the game logic to now use a new API GameMode class, allowing for moddable new game modes with custom default start times, minimum player counts, initialization and finalization methods, and client and server game loop ticking

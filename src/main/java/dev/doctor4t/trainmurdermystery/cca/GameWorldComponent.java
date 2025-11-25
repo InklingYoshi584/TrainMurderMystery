@@ -170,7 +170,7 @@ public class GameWorldComponent implements AutoSyncedComponent, ServerTickingCom
         return getRole(player) != null && getRole(player).canUseKiller();
     }
     public boolean isInnocent(@NotNull PlayerEntity player) {
-        return getRole(player) == null || getRole(player).isInnocent();
+        return getRole(player) != null && getRole(player).isInnocent();
     }
 
     public void clearRoleMap() {
@@ -339,12 +339,21 @@ public class GameWorldComponent implements AutoSyncedComponent, ServerTickingCom
             }
 
             if (this.isRunning()) {
-                // kill players who fell off the train
                 for (ServerPlayerEntity player : serverWorld.getPlayers()) {
-                    if (GameFunctions.isPlayerAliveAndSurvival(player) && player.getY() < areas.playArea.minY) {
-                        GameFunctions.killPlayer(player, false, player.getLastAttacker() instanceof PlayerEntity killerPlayer ? killerPlayer : null, TMM.id("fell_out_of_train"));
+                    if (GameFunctions.isPlayerAliveAndSurvival(player)) {
+                        // kill players who fell off the train
+                        if (player.getY() < areas.playArea.minY) {
+                            GameFunctions.killPlayer(player, false, player.getLastAttacker() instanceof PlayerEntity killerPlayer ? killerPlayer : null, TMM.id("fell_out_of_train"));
+                        }
+
+                        // put players with no role in spectator mode
+                        if (GameWorldComponent.KEY.get(world).getRole(player) == null) {
+                            player.changeGameMode(net.minecraft.world.GameMode.SPECTATOR);
+                        }
                     }
+
                 }
+
 
                 // run game loop logic
                 gameMode.tickServerGameLoop(serverWorld, this);
