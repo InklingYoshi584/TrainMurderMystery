@@ -61,27 +61,24 @@ public record GunShootPayload(int target) implements CustomPayload {
 
                 if (game.isInnocent(target) && !player.isCreative() && mainHandStack.isOf(revolver)) {
                     // backfire: if you kill an innocent you have a chance of shooting yourself instead
-                    if (game.isInnocent(player) && player.getRandom().nextFloat() <= game.getBackfireChance()) {
-                        backfire = true;
-                        GameFunctions.killPlayer(player, true, player, TMM.id("gun_shot"));
-                    } else {
-                        Scheduler.schedule(() -> {
-                            if (!context.player().getInventory().contains((s) -> s.isIn(TMMItemTags.GUNS))) return;
-                            player.getInventory().remove((s) -> s.isOf(revolver), 1, player.getInventory());
-                            var item = player.dropItem(revolver.getDefaultStack(), false, false);
-                            if (item != null) {
-                                item.setPickupDelay(10);
-                                item.setThrower(player);
-                            }
-                            ServerPlayNetworking.send(player, new GunDropPayload());
-                            PlayerMoodComponent.KEY.get(player).setMood(0);
-                        }, 4);
+                    if (player.getRandom().nextFloat() <= game.getBackfireChance()) {
+                        GameFunctions.killPlayer(player, true, player, GameConstants.DeathReasons.GUN);
+                        return;
                     }
-                }
 
-                if (!backfire) {
-                    GameFunctions.killPlayer(target, true, player, TMM.id("gun_shot"));
+                    Scheduler.schedule(() -> {
+                        if (!context.player().getInventory().contains((s) -> s.isIn(TMMItemTags.GUNS))) return;
+                        player.getInventory().remove((s) -> s.isOf(revolver), 1, player.getInventory());
+                        var item = player.dropItem(revolver.getDefaultStack(), false, false);
+                        if (item != null) {
+                            item.setPickupDelay(10);
+                            item.setThrower(player);
+                        }
+                        ServerPlayNetworking.send(player, new GunDropPayload());
+                        PlayerMoodComponent.KEY.get(player).setMood(0);
+                    }, 4);
                 }
+                GameFunctions.killPlayer(target, true, player, GameConstants.DeathReasons.GUN);
             }
 
             player.getWorld().playSound(null, player.getX(), player.getEyeY(), player.getZ(), TMMSounds.ITEM_REVOLVER_SHOOT, SoundCategory.PLAYERS, 5f, 1f + player.getRandom().nextFloat() * .1f - .05f);
