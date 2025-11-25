@@ -403,7 +403,7 @@ public class TMMClient implements ClientModInitializer {
     }
 
     public static boolean isInstinctEnabled() {
-        return instinctKeybind.isPressed() && ((isKiller() && isPlayerAliveAndInSurvival()) || isPlayerSpectatingOrCreative());
+        return instinctKeybind.isPressed();
     }
 
     public static int getLockedRenderDistance(boolean ultraPerfMode) {
