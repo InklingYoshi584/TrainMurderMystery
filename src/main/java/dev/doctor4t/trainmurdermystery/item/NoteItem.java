@@ -38,6 +38,8 @@ public class NoteItem extends Item implements AdventureUsable {
         if (world.isClient) return ActionResult.PASS;
         var note = TMMEntities.NOTE.create(world);
 
+        if (note == null) return ActionResult.PASS;
+
         switch (context.getSide()) {
             case DOWN -> {
                 return ActionResult.PASS;
@@ -46,7 +48,6 @@ public class NoteItem extends Item implements AdventureUsable {
             case NORTH, SOUTH, WEST, EAST -> note.setYaw(180f + (world.random.nextFloat() - .5f) * 30f);
         }
 
-        if (note == null) return ActionResult.PASS;
         var side = context.getSide();
         note.setDirection(side);
         note.setLines(component.text);
