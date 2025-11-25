@@ -9,6 +9,7 @@ The Last Voyage of the Harpy Express 1.2 - 1.21.1
 - Discovery mode now requires 1+ player to be boarded to start, and loose ends requires 2+
 - /start now uses the identifier of the game mode you want to start and will suggest other game modes if they are registered / added via add-ons
 - Made the /start command available for everyone, restricting only Discovery and Loose Ends game modes start commands to supporters
+- Removed Sprinkler ambience as it would be unreliably playing with sound physics remastered and potentially cause performance issues
 
 ------------------------------------------------------
 The Last Voyage of the Harpy Express 1.1.5 - 1.21.1
