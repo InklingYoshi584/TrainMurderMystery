@@ -14,6 +14,9 @@ The Last Voyage of the Harpy Express 1.2 - 1.21.1
   - playArea: the entirety of the play area the player around bound to, if a player falls lower than the minimum Y of this area they will be killed
   - resetTemplateArea: the area the base template for the map reset is in
   - resetPasteArea: the area where the template should be pasted for the map reset
+- Added a new "backfire" mechanic and command for supporters
+  - Allows you to define the chance a player shooting another innocent player will cause them to shoot themselves instead
+  - 0 disables the mechanic, 1 guarantees it (0.5 for instance makes the chance 50%)
 - Discovery mode now requires 1+ player to be boarded to start, and loose ends requires 2+
 - /start now uses the identifier of the game mode you want to start and will suggest other game modes if they are registered / added via add-ons
 - Made the /start command available for everyone, restricting only Discovery and Loose Ends game modes start commands to supporters

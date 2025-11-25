@@ -65,6 +65,8 @@ public class GameWorldComponent implements AutoSyncedComponent, ServerTickingCom
 
     private UUID looseEndWinner;
 
+    private float backfireChance = 0f;
+
     public GameWorldComponent(World world) {
         this.world = world;
     }
@@ -217,6 +219,15 @@ public class GameWorldComponent implements AutoSyncedComponent, ServerTickingCom
 
     public void setLockedToSupporters(boolean lockedToSupporters) {
         this.lockedToSupporters = lockedToSupporters;
+    }
+
+    public float getBackfireChance() {
+        return backfireChance;
+    }
+
+    public void setBackfireChance(float backfireChance) {
+        this.backfireChance = backfireChance;
+        this.sync();
     }
 
     @Override
