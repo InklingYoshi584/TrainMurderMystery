@@ -267,7 +267,7 @@
   "game.psycho_mode.text": "Убей! Убей! Убей!",
   "game.psycho_mode.time": "Режим психа: %s",
   "game.start_error.game_running": "Нельзя начать игру: игра уже идёт.",
-  "game.start_error.not_enough_players": "Нельзя начать игру: нужно хотя бы 6 игроков.",
+  "game.start_error.not_enough_players": "Нельзя начать игру: нужно хотя бы %s игроков.",
   "game.tip.cohort": "Отряд убийцы",
   "game.win.killers": "Достаточно людей умерло. Убийцы победили!",
   "game.win.loose_end": "Они покончили со всеми незавершёнными делами!",
