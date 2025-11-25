@@ -291,6 +291,8 @@ public class GameWorldComponent implements AutoSyncedComponent, ServerTickingCom
 
         ServerWorld serverWorld = (ServerWorld) this.world;
 
+        AreasWorldComponent areas = AreasWorldComponent.KEY.get(serverWorld);
+
         // attempt to reset the play area
         if (--ticksUntilNextResetAttempt == 0) {
             if (GameFunctions.tryResetTrain((ServerWorld) this.world)) {
@@ -303,7 +305,7 @@ public class GameWorldComponent implements AutoSyncedComponent, ServerTickingCom
         // if not running and spectators or not in lobby reset them
         if (world.getTime() % 20 == 0) {
             for (ServerPlayerEntity player : serverWorld.getPlayers()) {
-                if (!isRunning() && (player.isSpectator() && serverWorld.getServer().getPermissionLevel(player.getGameProfile()) < 2 || (GameFunctions.isPlayerAliveAndSurvival(player) && GameConstants.PLAY_AREA.contains(player.getPos())))) {
+                if (!isRunning() && (player.isSpectator() && serverWorld.getServer().getPermissionLevel(player.getGameProfile()) < 2 || (GameFunctions.isPlayerAliveAndSurvival(player) && areas.playArea.contains(player.getPos())))) {
                     GameFunctions.resetPlayer(player);
                 }
             }
@@ -316,7 +318,7 @@ public class GameWorldComponent implements AutoSyncedComponent, ServerTickingCom
             if (trainComponent.getSpeed() > 0) {
                 for (ServerPlayerEntity player : serverWorld.getPlayers()) {
                     if (!GameFunctions.isPlayerAliveAndSurvival(player) && isBound()) {
-                        GameFunctions.limitPlayerToBox(player, GameConstants.PLAY_AREA);
+                        GameFunctions.limitPlayerToBox(player, areas.playArea);
                     }
                 }
             }
@@ -324,7 +326,7 @@ public class GameWorldComponent implements AutoSyncedComponent, ServerTickingCom
             if (this.isRunning()) {
                 // kill players who fell off the train
                 for (ServerPlayerEntity player : serverWorld.getPlayers()) {
-                    if (GameFunctions.isPlayerAliveAndSurvival(player) && player.getY() < GameConstants.PLAY_AREA.minY) {
+                    if (GameFunctions.isPlayerAliveAndSurvival(player) && player.getY() < areas.playArea.minY) {
                         GameFunctions.killPlayer(player, false, player.getLastAttacker() instanceof PlayerEntity killerPlayer ? killerPlayer : null, TMM.id("fell_out_of_train"));
                     }
                 }
