@@ -70,11 +70,13 @@ public abstract class PlayerEntityMixin extends LivingEntity {
     public void tmm$limitSprint(CallbackInfo ci) {
         GameWorldComponent gameComponent = GameWorldComponent.KEY.get(this.getWorld());
         if (GameFunctions.isPlayerAliveAndSurvival((PlayerEntity) (Object) this) && gameComponent != null && gameComponent.isRunning()) {
-            if (this.isSprinting()) {
-                sprintingTicks = Math.max(sprintingTicks - 1, 0);
-            } else {
-                Role role = gameComponent.getRole((PlayerEntity) (Object) this);
-                sprintingTicks = Math.min(sprintingTicks + 0.25f, role != null ? role.getMaxSprintTime() : Integer.MAX_VALUE);
+            Role role = gameComponent.getRole((PlayerEntity) (Object) this);
+            if (role != null && role.getMaxSprintTime() >= 0) {
+                if (this.isSprinting()) {
+                    sprintingTicks = Math.max(sprintingTicks - 1, 0);
+                } else {
+                    sprintingTicks = Math.min(sprintingTicks + 0.25f, role.getMaxSprintTime());
+                }
             }
 
             if (sprintingTicks <= 0) {
@@ -91,7 +93,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
             original.call(target);
         }
 
-        if (GameFunctions.isPlayerAliveAndSurvival(self) && getMainHandStack().isOf(TMMItems.BAT) && target instanceof PlayerEntity playerTarget && this.getAttackCooldownProgress(0.5F) >= 1f) {
+        if (getMainHandStack().isOf(TMMItems.BAT) && target instanceof PlayerEntity playerTarget && this.getAttackCooldownProgress(0.5F) >= 1f) {
             GameFunctions.killPlayer(playerTarget, true, self, GameConstants.DeathReasons.BAT);
             self.getEntityWorld().playSound(self,
                     playerTarget.getX(), playerTarget.getEyeY(), playerTarget.getZ(),
@@ -103,9 +105,9 @@ public abstract class PlayerEntityMixin extends LivingEntity {
     @Inject(method = "eatFood", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/HungerManager;eat(Lnet/minecraft/component/type/FoodComponent;)V", shift = At.Shift.AFTER))
     private void tmm$poisonedFoodEffect(@NotNull World world, ItemStack stack, FoodComponent foodComponent, CallbackInfoReturnable<ItemStack> cir) {
         if (world.isClient) return;
-        var poisoner = stack.getOrDefault(TMMDataComponentTypes.POISONER, null);
+        String poisoner = stack.getOrDefault(TMMDataComponentTypes.POISONER, null);
         if (poisoner != null) {
-            var poisonTicks = PlayerPoisonComponent.KEY.get(this).poisonTicks;
+            int poisonTicks = PlayerPoisonComponent.KEY.get(this).poisonTicks;
             if (poisonTicks == -1) {
                 PlayerPoisonComponent.KEY.get(this).setPoisonTicks(world.getRandom().nextBetween(PlayerPoisonComponent.clampTime.getLeft(), PlayerPoisonComponent.clampTime.getRight()), UUID.fromString(poisoner));
             } else {

@@ -42,7 +42,7 @@ public class PlayerPsychoComponent implements AutoSyncedComponent, ServerTicking
         this.psychoTicks--;
         if (this.player.getMainHandStack().isOf(TMMItems.BAT)) return;
         if (GameFunctions.isPlayerAliveAndSurvival(player)) {
-            for (var i = 0; i < 9; i++) {
+            for (int i = 0; i < 9; i++) {
                 if (!this.player.getInventory().getStack(i).isOf(TMMItems.BAT)) continue;
                 this.player.getInventory().selectedSlot = i;
                 break;
@@ -65,7 +65,7 @@ public class PlayerPsychoComponent implements AutoSyncedComponent, ServerTicking
         if (ShopEntry.insertStackInFreeSlot(this.player, new ItemStack(TMMItems.BAT))) {
             this.setPsychoTicks(GameConstants.PSYCHO_TIMER);
             this.setArmour(GameConstants.PSYCHO_MODE_ARMOUR);
-            var gameWorldComponent = GameWorldComponent.KEY.get(this.player.getWorld());
+            GameWorldComponent gameWorldComponent = GameWorldComponent.KEY.get(this.player.getWorld());
             gameWorldComponent.setPsychosActive(gameWorldComponent.getPsychosActive() + 1);
             return true;
         }
@@ -75,7 +75,7 @@ public class PlayerPsychoComponent implements AutoSyncedComponent, ServerTicking
     public void stopPsycho() {
         this.psychoTicks = 0;
         this.player.getInventory().remove(itemStack -> itemStack.isOf(TMMItems.BAT), Integer.MAX_VALUE, this.player.playerScreenHandler.getCraftingInput());
-        var gameWorldComponent = GameWorldComponent.KEY.get(this.player.getWorld());
+        GameWorldComponent gameWorldComponent = GameWorldComponent.KEY.get(this.player.getWorld());
         gameWorldComponent.setPsychosActive(gameWorldComponent.getPsychosActive() - 1);
 //        this.startPsycho();
     }
