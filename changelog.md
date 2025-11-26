@@ -1,4 +1,9 @@
 ------------------------------------------------------
+The Last Voyage of the Harpy Express 1.2.2.1 - 1.21.1
+------------------------------------------------------
+- Fixed a crash when starting the game
+
+------------------------------------------------------
 The Last Voyage of the Harpy Express 1.2.2 - 1.21.1
 ------------------------------------------------------
 - Removed money earning and starting amount from any players not killer to avoid the ability to buy items when you shouldn't
