@@ -1,4 +1,12 @@
 ------------------------------------------------------
+The Last Voyage of the Harpy Express 1.2.3 - 1.21.1
+------------------------------------------------------
+- Fixed killers not having infinite sprint
+- Fixed psychosis no longer showing random items but empty hands instead
+- Made creative players using the bat no longer hit people like in vanilla and instead work like in survival / adventure
+- API: Using -1 as a max sprint length will now make sure sprinting is infinite
+
+------------------------------------------------------
 The Last Voyage of the Harpy Express 1.2.2.2 - 1.21.1
 ------------------------------------------------------
 - Fixed killer shop not working
@@ -16,7 +24,7 @@ The Last Voyage of the Harpy Express 1.2.2 - 1.21.1
 - API: Moved death reason Identifiers to GameConstants$DeathReasons (ekulxam)
 
 ------------------------------------------------------
-The Last Voyage of the Harpy Express 1.2.1 - 1.21.1
+The Last Voyage of the Harpy Express 1.2.1 - 1.21.1****
 ------------------------------------------------------
 - Fixed internal server error when trying to join a server once a game is already running
 - Players in adventure / survival that do not have a role (e.g. if they were not there at the start of the game / joined the server while a game is running) now get automatically put in spectator
