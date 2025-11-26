@@ -55,8 +55,10 @@ public class MurderGameMode extends GameMode {
         var civilianAlive = false;
         for (ServerPlayerEntity player : serverWorld.getPlayers()) {
             // passive money
-            Integer balanceToAdd = GameConstants.PASSIVE_MONEY_TICKER.apply(serverWorld.getTime());
-            if (balanceToAdd > 0) PlayerShopComponent.KEY.get(player).addToBalance(balanceToAdd);
+            if (gameWorldComponent.canUseKillerFeatures(player)) {
+                Integer balanceToAdd = GameConstants.PASSIVE_MONEY_TICKER.apply(serverWorld.getTime());
+                if (balanceToAdd > 0) PlayerShopComponent.KEY.get(player).addToBalance(balanceToAdd);
+            }
 
             // check if some civilians are still alive
             if (gameWorldComponent.isInnocent(player) && !GameFunctions.isPlayerEliminated(player)) {

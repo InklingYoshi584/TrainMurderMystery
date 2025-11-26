@@ -299,7 +299,7 @@ public class GameFunctions {
             return;
         }
 
-        if (killer != null) {
+        if (killer != null && GameWorldComponent.KEY.get(killer.getWorld()).canUseKillerFeatures(killer)) {
             PlayerShopComponent.KEY.get(killer).addToBalance(GameConstants.MONEY_PER_KILL);
 
             // replenish derringer
