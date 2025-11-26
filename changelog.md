@@ -1,4 +1,9 @@
 ------------------------------------------------------
+The Last Voyage of the Harpy Express 1.2.2.2 - 1.21.1
+------------------------------------------------------
+- Fixed killer shop not working
+
+------------------------------------------------------
 The Last Voyage of the Harpy Express 1.2.2.1 - 1.21.1
 ------------------------------------------------------
 - Fixed a crash when starting the game
