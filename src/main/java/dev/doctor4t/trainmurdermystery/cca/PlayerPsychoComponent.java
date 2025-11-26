@@ -74,9 +74,7 @@ public class PlayerPsychoComponent implements AutoSyncedComponent, ServerTicking
 
     public void stopPsycho() {
         GameWorldComponent gameWorldComponent = GameWorldComponent.KEY.get(this.player.getWorld());
-        if (this.psychoTicks > 0) {
-            gameWorldComponent.setPsychosActive(gameWorldComponent.getPsychosActive() - 1);
-        }
+        gameWorldComponent.setPsychosActive(gameWorldComponent.getPsychosActive() - 1);
         this.psychoTicks = 0;
         this.player.getInventory().remove(itemStack -> itemStack.isOf(TMMItems.BAT), Integer.MAX_VALUE, this.player.playerScreenHandler.getCraftingInput());
     }

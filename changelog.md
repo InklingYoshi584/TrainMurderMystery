@@ -1,4 +1,9 @@
 ------------------------------------------------------
+The Last Voyage of the Harpy Express 1.2.6 - 1.21.1
+------------------------------------------------------
+- Fixed psycho ambience not going away
+
+------------------------------------------------------
 The Last Voyage of the Harpy Express 1.2.5 - 1.21.1
 ------------------------------------------------------
 - Fixed psycho mode not stopping properly
