@@ -88,10 +88,6 @@ public abstract class PlayerEntityMixin extends LivingEntity {
     @WrapMethod(method = "attack")
     public void attack(Entity target, Operation<Void> original) {
         PlayerEntity self = (PlayerEntity) (Object) this;
-        if (!GameFunctions.isPlayerAliveAndSurvival(self) || this.getMainHandStack().isOf(TMMItems.KNIFE)
-                || IsPlayerPunchable.EVENT.invoker().gotPunchable(target) || AllowPlayerPunching.EVENT.invoker().allowPunching(self)) {
-            original.call(target);
-        }
 
         if (getMainHandStack().isOf(TMMItems.BAT) && target instanceof PlayerEntity playerTarget && this.getAttackCooldownProgress(0.5F) >= 1f) {
             GameFunctions.killPlayer(playerTarget, true, self, GameConstants.DeathReasons.BAT);
@@ -99,6 +95,12 @@ public abstract class PlayerEntityMixin extends LivingEntity {
                     playerTarget.getX(), playerTarget.getEyeY(), playerTarget.getZ(),
                     TMMSounds.ITEM_BAT_HIT, SoundCategory.PLAYERS,
                     3f, 1f);
+            return;
+        }
+
+        if (!GameFunctions.isPlayerAliveAndSurvival(self) || this.getMainHandStack().isOf(TMMItems.KNIFE)
+                || IsPlayerPunchable.EVENT.invoker().gotPunchable(target) || AllowPlayerPunching.EVENT.invoker().allowPunching(self)) {
+            original.call(target);
         }
     }
 

@@ -9,7 +9,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.util.Hand;
 import org.jetbrains.annotations.NotNull;
 import org.ladysnake.cca.api.v3.component.ComponentKey;
 import org.ladysnake.cca.api.v3.component.ComponentRegistry;
@@ -58,6 +57,7 @@ public class PlayerPsychoComponent implements AutoSyncedComponent, ServerTicking
 //            this.player.sendMessage(Text.translatable("game.psycho_mode.over").withColor(Colors.RED), true);
             this.stopPsycho();
         }
+
         this.sync();
     }
 
@@ -73,11 +73,12 @@ public class PlayerPsychoComponent implements AutoSyncedComponent, ServerTicking
     }
 
     public void stopPsycho() {
-        this.psychoTicks = 0;
-        this.player.getInventory().remove(itemStack -> itemStack.isOf(TMMItems.BAT), Integer.MAX_VALUE, this.player.playerScreenHandler.getCraftingInput());
-        GameWorldComponent gameWorldComponent = GameWorldComponent.KEY.get(this.player.getWorld());
-        gameWorldComponent.setPsychosActive(gameWorldComponent.getPsychosActive() - 1);
-//        this.startPsycho();
+        if (this.psychoTicks > 0) {
+            this.psychoTicks = 0;
+            this.player.getInventory().remove(itemStack -> itemStack.isOf(TMMItems.BAT), Integer.MAX_VALUE, this.player.playerScreenHandler.getCraftingInput());
+            GameWorldComponent gameWorldComponent = GameWorldComponent.KEY.get(this.player.getWorld());
+            gameWorldComponent.setPsychosActive(gameWorldComponent.getPsychosActive() - 1);
+        }
     }
 
     public int getArmour() {
@@ -90,7 +91,7 @@ public class PlayerPsychoComponent implements AutoSyncedComponent, ServerTicking
     }
 
     public int getPsychoTicks() {
-        return player.isCreative() && player.getStackInHand(Hand.MAIN_HAND).isOf(TMMItems.BAT) ? 9999 : this.psychoTicks;
+        return this.psychoTicks;
     }
 
     public void setPsychoTicks(int ticks) {
