@@ -366,10 +366,20 @@ public class GameWorldComponent implements AutoSyncedComponent, ServerTickingCom
 
             if (this.isRunning()) {
                 for (ServerPlayerEntity player : serverWorld.getPlayers()) {
-                    if (GameFunctions.isPlayerAliveAndSurvival(player) && player.getY() < areas.playArea.minY) {
-                        GameFunctions.killPlayer(player, false, player.getLastAttacker() instanceof PlayerEntity killerPlayer ? killerPlayer : null, GameConstants.DeathReasons.FELL_OUT_OF_TRAIN);
+                    if (GameFunctions.isPlayerAliveAndSurvival(player)) {
+                        // kill players who fell off the train
+                        if (player.getY() < areas.playArea.minY) {
+                            GameFunctions.killPlayer(player, false, player.getLastAttacker() instanceof PlayerEntity killerPlayer ? killerPlayer : null, GameConstants.DeathReasons.FELL_OUT_OF_TRAIN);
+                        }
+
+                        // put players with no role in spectator mode
+                        if (GameWorldComponent.KEY.get(world).getRole(player) == null) {
+                            player.changeGameMode(net.minecraft.world.GameMode.SPECTATOR);
+                        }
                     }
+
                 }
+
 
                 // run game loop logic
                 gameMode.tickServerGameLoop(serverWorld, this);

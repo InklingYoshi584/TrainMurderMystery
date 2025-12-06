@@ -64,7 +64,8 @@ public record GunShootPayload(int target) implements CustomPayload {
 
                 if (game.isInnocent(target) && !player.isCreative() && mainHandStack.isOf(revolver)) {
                     // backfire: if you kill an innocent you have a chance of shooting yourself instead
-                    if (player.getRandom().nextFloat() <= game.getBackfireChance()) {
+                    if (game.isInnocent(player) && player.getRandom().nextFloat() <= game.getBackfireChance()) {
+                        backfire = true;
                         GameFunctions.killPlayer(player, true, player, GameConstants.DeathReasons.GUN);
                     } else {
                         Scheduler.schedule(() -> {
