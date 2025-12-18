@@ -32,7 +32,10 @@ public class LockpickItem extends Item implements AdventureUsable {
             if (world.getBlockEntity(lowerPos) instanceof SmallDoorBlockEntity entity) {
                 if (player.isSneaking()) {
                     entity.jam();
-                    SmallDoorBlock.getNeighborDoorEntity(state, world, lowerPos);
+                    SmallDoorBlockEntity neighborDoorEntity = SmallDoorBlock.getNeighborDoorEntity(state, world, lowerPos);
+                    if (neighborDoorEntity != null) {
+                        neighborDoorEntity.jam();
+                    }
 
                     if (!player.isCreative()) {
                         player.getItemCooldownManager().set(this, GameConstants.ITEM_COOLDOWNS.get(this));
