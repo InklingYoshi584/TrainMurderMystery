@@ -1,5 +1,6 @@
 package dev.doctor4t.wathe.item;
 
+import dev.doctor4t.wathe.Wathe;
 import dev.doctor4t.wathe.game.GameFunctions;
 import dev.doctor4t.wathe.index.WatheCosmetics;
 import dev.doctor4t.wathe.index.WatheDataComponentTypes;
@@ -25,6 +26,12 @@ import java.util.Locale;
 import java.util.Random;
 
 public class KnifeItem extends Item {
+
+    /**
+     * the registry ID of the knife item
+     */
+    public static final Identifier ITEM_ID = Wathe.id("knife");
+
     public KnifeItem(Settings settings) {
         super(settings);
     }
@@ -35,9 +42,6 @@ public class KnifeItem extends Item {
         ItemStack itemStack = user.getStackInHand(hand);
 
         Skin currentSkin = Skin.fromString(WatheCosmetics.getSkin(itemStack));
-        if (currentSkin == null) {
-            currentSkin = Skin.DEFAULT;
-        }
         WatheCosmetics.setSkin(user.getUuid(), itemStack, Skin.getNext(currentSkin).getName());
 
         user.setCurrentHand(hand);
@@ -104,10 +108,9 @@ public class KnifeItem extends Item {
             return new Pair<>(this.colors[i], this.shadowColors[i]);
         }
 
-        @Nullable
         public static Skin fromString(String name) {
             for (Skin skin : Skin.values()) if (skin.getName().equalsIgnoreCase(name)) return skin;
-            return null;
+            return DEFAULT;
         }
 
         public static Skin getNext(Skin skin) {

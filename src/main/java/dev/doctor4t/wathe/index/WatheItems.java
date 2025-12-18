@@ -22,7 +22,7 @@ public @SuppressWarnings("unchecked") interface WatheItems {
 
     Item KEY = registrar.create("key", new KeyItem(new Item.Settings().maxCount(1)), EQUIPMENT_GROUP);
     Item LOCKPICK = registrar.create("lockpick", new LockpickItem(new Item.Settings().maxCount(1)), EQUIPMENT_GROUP);
-    Item KNIFE = registrar.create("knife", new KnifeItem(new Item.Settings().maxCount(1)), EQUIPMENT_GROUP);
+    Item KNIFE = registrar.create(KnifeItem.ITEM_ID.getPath(), new KnifeItem(new Item.Settings().maxCount(1)), EQUIPMENT_GROUP);
     Item BAT = registrar.create("bat", new BatItem(new Item.Settings().maxCount(1).attributeModifiers(AxeItem.createAttributeModifiers(ToolMaterials.WOOD, 0.0F, -3.0F))), EQUIPMENT_GROUP);
     Item CROWBAR = registrar.create("crowbar", new CrowbarItem(new Item.Settings().maxCount(1)), EQUIPMENT_GROUP);
     Item GRENADE = registrar.create("grenade", new GrenadeItem(new Item.Settings().maxCount(1)), EQUIPMENT_GROUP);
