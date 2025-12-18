@@ -136,7 +136,7 @@ public class TMMLangGen extends FabricLanguageProvider {
                     spawnPos: The spawn position and orientation players will be reset to once the game ends.
                     spectatorSpawnPos: The spawn position and orientation players will be set to when set as spectators at the start of a game.
                     readyArea: The lobby area which players need to be in to be selected for a game.
-                    playAreaOffset: The offset between the play area and the game area.
+                    playAreaOffset: The offset players will be teleported by from the ready area into the play area.
                     playArea: The play area outside of which players will be eliminated.
                     resetTemplateArea: The template that will be copied over the play area in order to reset the map.
                     resetPasteOffset: The offset at which the template should be pasted.
