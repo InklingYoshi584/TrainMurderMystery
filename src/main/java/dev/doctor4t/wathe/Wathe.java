@@ -129,7 +129,10 @@ public class Wathe implements ModInitializer {
     }
 
     public static final Identifier COMMAND_ACCESS = id("commandaccess");
-
+    public static @NotNull Boolean isSupporter(PlayerEntity player) {
+        Optional<Entitlements> entitlements = Entitlements.token().get(player.getUuid());
+        return entitlements.map(value -> value.keys().stream().anyMatch(identifier -> identifier.equals(COMMAND_ACCESS))).orElse(false);
+    }
     public static int executeSupporterCommand(ServerCommandSource source, Runnable runnable) {
         ServerPlayerEntity player = source.getPlayer();
         if (player == null || !player.getClass().equals(ServerPlayerEntity.class)) return 0;
