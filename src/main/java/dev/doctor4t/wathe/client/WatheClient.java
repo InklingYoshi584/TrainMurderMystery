@@ -5,6 +5,7 @@ import dev.doctor4t.ratatouille.client.util.OptionLocker;
 import dev.doctor4t.ratatouille.client.util.ambience.AmbienceUtil;
 import dev.doctor4t.ratatouille.client.util.ambience.BackgroundAmbience;
 import dev.doctor4t.wathe.Wathe;
+import dev.doctor4t.wathe.entity.PlayerBodyEntity;
 import dev.doctor4t.wathe.WatheConfig;
 import dev.doctor4t.wathe.cca.GameWorldComponent;
 import dev.doctor4t.wathe.cca.PlayerMoodComponent;
@@ -78,8 +79,7 @@ public class WatheClient implements ClientModInitializer {
     public static float instinctLightLevel = -.04f;
 
     public static boolean shouldDisableHudAndDebug() {
-        MinecraftClient client = MinecraftClient.getInstance();
-        return (client == null || (client.player != null && !client.player.isCreative() && !client.player.isSpectator()));
+        return false;
     }
 
     @Override
@@ -359,12 +359,12 @@ public class WatheClient implements ClientModInitializer {
 
     public static int getInstinctHighlight(Entity target) {
         if (!isInstinctEnabled()) return -1;
-//        if (target instanceof PlayerBodyEntity) return 0x606060;
+       if (target instanceof PlayerBodyEntity) return 0x606060;
         if (target instanceof ItemEntity || target instanceof NoteEntity || target instanceof FirecrackerEntity)
             return 0xDB9D00;
         if (target instanceof PlayerEntity player) {
             if (GameFunctions.isPlayerSpectatingOrCreative(player)) return -1;
-            if (isKiller() && gameComponent.canUseKillerFeatures(player)) return MathHelper.hsvToRgb(0F, 1.0F, 0.6F);
+            if (isKiller()) return MathHelper.hsvToRgb(0F, 1.0F, 0.6F);
             if (gameComponent.isInnocent(player)) {
                 float mood = PlayerMoodComponent.KEY.get(target).getMood();
                 if (mood < GameConstants.DEPRESSIVE_MOOD_THRESHOLD) {
@@ -375,13 +375,13 @@ public class WatheClient implements ClientModInitializer {
                     return 0x4EDD35;
                 }
             }
-            if (isPlayerSpectatingOrCreative()) return 0xFFFFFF;
+            return 0xFFFFFF;
         }
         return -1;
     }
 
     public static boolean isInstinctEnabled() {
-        return instinctKeybind.isPressed() && ((isKiller() && isPlayerAliveAndInSurvival()) || isPlayerSpectatingOrCreative());
+        return instinctKeybind.isPressed();
     }
 
     public static int getLockedRenderDistance(boolean ultraPerfMode) {
