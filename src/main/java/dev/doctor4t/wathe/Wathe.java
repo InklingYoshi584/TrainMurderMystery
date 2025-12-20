@@ -62,26 +62,25 @@ public class Wathe implements ModInitializer {
 
         // Register commands
         CommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess, environment) -> {
-            MapVariablesCommand.register(dispatcher);
-            GameSettingsCommand.register(dispatcher);
-            GiveRoomKeyCommand.register(dispatcher);
-            StartCommand.register(dispatcher);
-            StopCommand.register(dispatcher);
-            SetVisualCommand.register(dispatcher);
-            ForceRoleCommand.register(dispatcher);
-//            UpdateDoorsCommand.register(dispatcher);
-            SetTimerCommand.register(dispatcher);
-            SetMoneyCommand.register(dispatcher);
-            LockToSupportersCommand.register(dispatcher);
-        }));
+                MapVariablesCommand.register(dispatcher);
+                GameSettingsCommand.register(dispatcher);
+                GiveRoomKeyCommand.register(dispatcher);
+                StartCommand.register(dispatcher);
+                StopCommand.register(dispatcher);
+                SetVisualCommand.register(dispatcher);
+                ForceRoleCommand.register(dispatcher);
+    //           UpdateDoorsCommand.register(dispatcher);
+                SetTimerCommand.register(dispatcher);
+                SetMoneyCommand.register(dispatcher);
+                LockToSupportersCommand.register(dispatcher);
+                SetKillerCountCommand.register(dispatcher);
+                SetKillerRatioCommand.register(dispatcher);
+                SimulateScoreboardCommand.register(dispatcher);
+            }));
 
         // server lock to supporters
         ServerPlayerEvents.JOIN.register(player -> {
             DataSyncAPI.refreshAllPlayerData(player.getUuid()).thenRunAsync(() -> {
-                // check if player is supporter now, if not kick
-                if (GameWorldComponent.KEY.get(player.getWorld()).isLockedToSupporters() && !Wathe.isSupporter(player)) {
-                    player.networkHandler.disconnect(Text.literal("Server is reserved to doctor4t supporters."));
-                }
             }, player.getWorld().getServer());
         });
 
@@ -135,17 +134,7 @@ public class Wathe implements ModInitializer {
         ServerPlayerEntity player = source.getPlayer();
         if (player == null || !player.getClass().equals(ServerPlayerEntity.class)) return 0;
 
-        if (isSupporter(player) || FabricLoader.getInstance().isDevelopmentEnvironment()) {
-            runnable.run();
-            return 1;
-        } else {
-            player.sendMessage(Text.translatable("commands.supporter_only"));
-            return 0;
-        }
-    }
-
-    public static @NotNull Boolean isSupporter(PlayerEntity player) {
-        Optional<Entitlements> entitlements = Entitlements.token().get(player.getUuid());
-        return entitlements.map(value -> value.keys().stream().anyMatch(identifier -> identifier.equals(COMMAND_ACCESS))).orElse(false);
+        runnable.run();
+        return 1;
     }
 }

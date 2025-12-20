@@ -56,6 +56,7 @@ public class GameWorldComponent implements AutoSyncedComponent, ServerTickingCom
     private int fade = 0;
 
     private final HashMap<UUID, Role> roles = new HashMap<>();
+    private final HashMap<UUID, Role> previousRoundRoles = new HashMap<>();
 
     private int ticksUntilNextResetAttempt = -1;
 
@@ -64,12 +65,32 @@ public class GameWorldComponent implements AutoSyncedComponent, ServerTickingCom
     private UUID looseEndWinner;
 
     private float backfireChance = 0f;
+    private int nextRoundKillerCount = 0; // 0 = use ratio, >0 = exact count for next round
+    private int killerPlayerRatio = 6; // 1 killer per X players
 
     private int killerDividend = 5;
     private int vigilanteDividend = 5;
 
     public GameWorldComponent(World world) {
         this.world = world;
+    }
+
+    public int getNextRoundKillerCount() {
+        return nextRoundKillerCount;
+    }
+
+    public void setNextRoundKillerCount(int nextRoundKillerCount) {
+        this.nextRoundKillerCount = Math.max(0, nextRoundKillerCount);
+        this.sync();
+    }
+
+    public int getKillerPlayerRatio() {
+        return killerPlayerRatio;
+    }
+
+    public void setKillerPlayerRatio(int killerPlayerRatio) {
+        this.killerPlayerRatio = Math.max(1, killerPlayerRatio);
+        this.sync();
     }
 
     public void sync() {
@@ -179,7 +200,26 @@ public class GameWorldComponent implements AutoSyncedComponent, ServerTickingCom
         setPsychosActive(0);
     }
 
-    public void queueMapReset() {
+    /**
+     * Checks if a player had a specific role in the previous round
+     * @param playerUuid The player's UUID
+     * @param role The role to check for
+     * @return true if the player had this role in the previous round
+     */
+    public boolean wasRoleLastRound(UUID playerUuid, Role role) {
+        return previousRoundRoles.get(playerUuid) == role;
+    }
+
+    /**
+     * Updates the previous round roles with the current round's roles
+     * Should be called at the end of each round
+     */
+    public void updatePreviousRoundRoles() {
+        previousRoundRoles.clear();
+        previousRoundRoles.putAll(roles);
+    }
+
+    public void queueMapReset() {        
         ticksUntilNextResetAttempt = 10;
     }
 
@@ -271,12 +311,31 @@ public class GameWorldComponent implements AutoSyncedComponent, ServerTickingCom
         this.psychosActive = nbtCompound.getInt("PsychosActive");
 
         this.backfireChance = nbtCompound.getFloat("BackfireChance");
+        this.nextRoundKillerCount = nbtCompound.getInt("NextRoundKillerCount");
+        this.killerPlayerRatio = nbtCompound.getInt("KillerPlayerRatio") > 0 ? nbtCompound.getInt("KillerPlayerRatio") : 6;
 
         this.killerDividend = nbtCompound.getInt("KillerDividend");
         this.vigilanteDividend = nbtCompound.getInt("VigilanteDividend");
 
         for (Role role : WatheRoles.ROLES) {
             this.setRoles(uuidListFromNbt(nbtCompound, role.identifier().toString()), role);
+        }
+
+        // Load previous round roles
+        if (nbtCompound.contains("PreviousRoundRoles")) {
+            NbtCompound previousRolesNbt = nbtCompound.getCompound("PreviousRoundRoles");
+            previousRoundRoles.clear();
+            for (String key : previousRolesNbt.getKeys()) {
+                UUID playerUuid = UUID.fromString(key);
+                String roleName = previousRolesNbt.getString(key);
+                Role role = WatheRoles.ROLES.stream()
+                    .filter(r -> r.identifier().toString().equals(roleName))
+                    .findFirst()
+                    .orElse(null);
+                if (role != null) {
+                    previousRoundRoles.put(playerUuid, role);
+                }
+            }
         }
 
         if (nbtCompound.contains("LooseEndWinner")) {
@@ -307,6 +366,8 @@ public class GameWorldComponent implements AutoSyncedComponent, ServerTickingCom
         nbtCompound.putInt("PsychosActive", psychosActive);
 
         nbtCompound.putFloat("BackfireChance", backfireChance);
+        nbtCompound.putInt("NextRoundKillerCount", nextRoundKillerCount);
+        nbtCompound.putInt("KillerPlayerRatio", killerPlayerRatio);
 
         nbtCompound.putInt("KillerDividend", killerDividend);
         nbtCompound.putInt("VigilanteDividend", vigilanteDividend);
@@ -314,6 +375,13 @@ public class GameWorldComponent implements AutoSyncedComponent, ServerTickingCom
         for (Role role : WatheRoles.ROLES) {
             nbtCompound.put(role.identifier().toString(), nbtFromUuidList(getAllWithRole(role)));
         }
+
+        // Save previous round roles
+        NbtCompound previousRolesNbt = new NbtCompound();
+        for (HashMap.Entry<UUID, Role> entry : previousRoundRoles.entrySet()) {
+            previousRolesNbt.putString(entry.getKey().toString(), entry.getValue().identifier().toString());
+        }
+        nbtCompound.put("PreviousRoundRoles", previousRolesNbt);
 
         if (this.looseEndWinner != null) nbtCompound.putUuid("LooseEndWinner", this.looseEndWinner);
     }

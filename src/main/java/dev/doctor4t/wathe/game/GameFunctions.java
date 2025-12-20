@@ -193,6 +193,9 @@ public class GameFunctions {
         GameEvents.ON_GAME_STOP.invoker().onGameStop(gameComponent.getGameMode());
         gameComponent.getGameMode().finalizeGame(world, gameComponent);
 
+        // Save current round roles as previous round roles before clearing
+        gameComponent.updatePreviousRoundRoles();
+
         WorldBlackoutComponent.KEY.get(world).reset();
         TrainWorldComponent trainComponent = TrainWorldComponent.KEY.get(world);
         trainComponent.setSpeed(0);
