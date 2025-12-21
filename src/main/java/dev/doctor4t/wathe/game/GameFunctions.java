@@ -111,6 +111,8 @@ public class GameFunctions {
         List<ServerPlayerEntity> readyPlayerList = getReadyPlayerList(serverWorld);
 
         GameEvents.ON_GAME_START.invoker().onGameStart(gameComponent.getGameMode());
+        // Clear roles BEFORE base initialization to ensure forced roles work correctly
+        gameComponent.clearRoleMap();
         baseInitialize(serverWorld, gameComponent, readyPlayerList);
         gameComponent.getGameMode().initializeGame(serverWorld, gameComponent, readyPlayerList);
 
@@ -169,7 +171,7 @@ public class GameFunctions {
             HashSet<Item> copy = new HashSet<>(serverPlayerEntity.getItemCooldownManager().entries.keySet());
             for (Item item : copy) serverPlayerEntity.getItemCooldownManager().remove(item);
         }
-        gameComponent.clearRoleMap();
+        // Role map is now cleared in initializeGame method above
         GameTimeComponent.KEY.get(serverWorld).reset();
 
         // reset map
