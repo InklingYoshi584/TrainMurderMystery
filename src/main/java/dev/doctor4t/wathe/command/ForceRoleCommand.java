@@ -4,6 +4,8 @@ import com.mojang.brigadier.CommandDispatcher;
 import dev.doctor4t.wathe.Wathe;
 import dev.doctor4t.wathe.cca.GameWorldComponent;
 import dev.doctor4t.wathe.cca.ScoreboardRoleSelectorComponent;
+import dev.doctor4t.wathe.game.GameConstants;
+import dev.doctor4t.wathe.game.GameFunctions;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -31,6 +33,13 @@ public class ForceRoleCommand {
                     component.forcedKillers.clear();
                     for (ServerPlayerEntity player : players) component.forcedKillers.add(player.getUuid());
                     
+                    // Auto-start a new game to apply forced roles immediately
+                    if (GameWorldComponent.KEY.get(source.getWorld()).isRunning()) {
+                        GameFunctions.finalizeGame(source.getWorld());
+                    }
+                    GameFunctions.initializeGame(source.getWorld());
+                    
+                    source.sendFeedback(() -> Text.literal("Forced " + players.size() + " players as killers and started new game").formatted(), false);
                 }
         );
     }
@@ -42,6 +51,13 @@ public class ForceRoleCommand {
                     component.forcedVigilantes.clear();
                     for (ServerPlayerEntity player : players) component.forcedVigilantes.add(player.getUuid());
                     
+                    // Auto-start a new game to apply forced roles immediately
+                    if (GameWorldComponent.KEY.get(source.getWorld()).isRunning()) {
+                        GameFunctions.finalizeGame(source.getWorld());
+                    }
+                    GameFunctions.initializeGame(source.getWorld());
+                    
+                    source.sendFeedback(() -> Text.literal("Forced " + players.size() + " players as vigilantes and started new game").formatted(), false);
                 }
         );
     }
