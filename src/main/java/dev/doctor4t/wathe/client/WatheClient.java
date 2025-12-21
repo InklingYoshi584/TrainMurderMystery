@@ -23,6 +23,7 @@ import dev.doctor4t.wathe.client.render.entity.NoteEntityRenderer;
 import dev.doctor4t.wathe.client.util.WatheItemTooltips;
 import dev.doctor4t.wathe.entity.FirecrackerEntity;
 import dev.doctor4t.wathe.entity.NoteEntity;
+import dev.doctor4t.wathe.entity.PlayerBodyEntity;
 import dev.doctor4t.wathe.game.GameConstants;
 import dev.doctor4t.wathe.game.GameFunctions;
 import dev.doctor4t.wathe.index.*;
@@ -359,12 +360,12 @@ public class WatheClient implements ClientModInitializer {
 
     public static int getInstinctHighlight(Entity target) {
         if (!isInstinctEnabled()) return -1;
-//        if (target instanceof PlayerBodyEntity) return 0x606060;
+        if (target instanceof PlayerBodyEntity) return 0x606060;
         if (target instanceof ItemEntity || target instanceof NoteEntity || target instanceof FirecrackerEntity)
             return 0xDB9D00;
         if (target instanceof PlayerEntity player) {
-            if (GameFunctions.isPlayerSpectatingOrCreative(player)) return -1;
-            if (isKiller() && gameComponent.canUseKillerFeatures(player)) return MathHelper.hsvToRgb(0F, 1.0F, 0.6F);
+            if (GameFunctions.isPlayerSpectatingOrCreative(player)) return 0x000000;
+            if (gameComponent.canUseKillerFeatures(player)) return MathHelper.hsvToRgb(0F, 1.0F, 0.6F);
             if (gameComponent.isInnocent(player)) {
                 float mood = PlayerMoodComponent.KEY.get(target).getMood();
                 if (mood < GameConstants.DEPRESSIVE_MOOD_THRESHOLD) {
@@ -375,13 +376,13 @@ public class WatheClient implements ClientModInitializer {
                     return 0x4EDD35;
                 }
             }
-            if (isPlayerSpectatingOrCreative()) return 0xFFFFFF;
+            return 0xFFFFFF;
         }
         return -1;
     }
 
     public static boolean isInstinctEnabled() {
-        return instinctKeybind.isPressed() && ((isKiller() && isPlayerAliveAndInSurvival()) || isPlayerSpectatingOrCreative());
+        return instinctKeybind.isPressed();
     }
 
     public static int getLockedRenderDistance(boolean ultraPerfMode) {
