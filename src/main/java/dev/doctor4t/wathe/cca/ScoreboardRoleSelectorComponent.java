@@ -376,6 +376,8 @@ public class ScoreboardRoleSelectorComponent implements AutoSyncedComponent {
         
         // Handle case where we have no more killers to assign
         if (killerCount <= 0) {
+            // Still assign roles to forced killers even if killerCount is 0 or negative
+            assignKillerRoles(world, gameComponent, killers);
             this.reduceKillers(); // Reduce after assignment
             return killers.size();
         }
@@ -431,16 +433,25 @@ public class ScoreboardRoleSelectorComponent implements AutoSyncedComponent {
         int additionalMoneyPerExcess = 20; // 20 coins per excess player
         int dynamicStartingMoney = GameConstants.MONEY_START + (excessPlayers * additionalMoneyPerExcess);
         
+        // Assign killer roles to all selected killers (including forced ones)
+        assignKillerRoles(world, gameComponent, killers, dynamicStartingMoney);
+        
+        this.reduceKillers(); // Reduce after assignment to normalize counts
+        return killers.size();
+    }
+    
+    private void assignKillerRoles(ServerWorld world, GameWorldComponent gameComponent, ArrayList<UUID> killers) {
+        assignKillerRoles(world, gameComponent, killers, GameConstants.MONEY_START);
+    }
+    
+    private void assignKillerRoles(ServerWorld world, GameWorldComponent gameComponent, ArrayList<UUID> killers, int startingMoney) {
         for (UUID killerUUID : killers) {
             gameComponent.addRole(killerUUID, WatheRoles.KILLER);
             PlayerEntity killer = world.getPlayerByUuid(killerUUID);
             if (killer != null) {
-                PlayerShopComponent.KEY.get(killer).setBalance(dynamicStartingMoney);
+                PlayerShopComponent.KEY.get(killer).setBalance(startingMoney);
             }
         }
-        
-        this.reduceKillers(); // Reduce after assignment to normalize counts
-        return killers.size();
     }
 
     private void reduceKillers() {

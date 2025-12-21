@@ -2,11 +2,13 @@ package dev.doctor4t.wathe.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import dev.doctor4t.wathe.Wathe;
+import dev.doctor4t.wathe.cca.GameWorldComponent;
 import dev.doctor4t.wathe.cca.ScoreboardRoleSelectorComponent;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -28,6 +30,7 @@ public class ForceRoleCommand {
                     ScoreboardRoleSelectorComponent component = ScoreboardRoleSelectorComponent.KEY.get(source.getServer().getScoreboard());
                     component.forcedKillers.clear();
                     for (ServerPlayerEntity player : players) component.forcedKillers.add(player.getUuid());
+                    
                 }
         );
     }
@@ -38,6 +41,7 @@ public class ForceRoleCommand {
                     ScoreboardRoleSelectorComponent component = ScoreboardRoleSelectorComponent.KEY.get(source.getServer().getScoreboard());
                     component.forcedVigilantes.clear();
                     for (ServerPlayerEntity player : players) component.forcedVigilantes.add(player.getUuid());
+                    
                 }
         );
     }

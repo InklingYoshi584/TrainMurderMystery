@@ -76,6 +76,7 @@ public class Wathe implements ModInitializer {
                 SetKillerCountCommand.register(dispatcher);
                 SetKillerRatioCommand.register(dispatcher);
                 SimulateScoreboardCommand.register(dispatcher);
+                ShowRoleWeightsCommand.register(dispatcher);
             }));
 
         // server lock to supporters
