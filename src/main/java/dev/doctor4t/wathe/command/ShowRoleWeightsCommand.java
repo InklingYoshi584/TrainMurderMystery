@@ -38,42 +38,49 @@ public class ShowRoleWeightsCommand {
         int killerRounds = selector.killerRounds.getOrDefault(player.getUuid(), 0);
         int vigilanteRounds = selector.vigilanteRounds.getOrDefault(player.getUuid(), 0);
         
-        // Calculate weights using the same formula as the actual game
+        // Calculate weights using the same formula as the actual game (linear decay)
         float killerWeight = 1.0f / (1.0f + killerRounds);
         float vigilanteWeight = 1.0f / (1.0f + vigilanteRounds);
         
-        // Apply minimum weight
+        // Apply minimum weight (same as actual game)
         killerWeight = Math.max(killerWeight, 0.1f);
         vigilanteWeight = Math.max(vigilanteWeight, 0.1f);
         
         // Apply role repetition penalties if applicable
         if (gameComponent.wasRoleLastRound(player.getUuid(), WatheRoles.KILLER)) {
-            killerWeight *= 0.7f; // 30% reduction for recent killers
+            killerWeight *= 0.7; // 30% reduction for recent killers
         }
         if (gameComponent.wasRoleLastRound(player.getUuid(), WatheRoles.VIGILANTE)) {
-            vigilanteWeight *= 0.5f; // 50% reduction for recent vigilantes
+            vigilanteWeight *= 0.5; // 50% reduction for recent vigilantes
         }
 
-        // Get role translations
-        String killerRoleName = Text.translatable("announcement.role.killer").getString();
-        String vigilanteRoleName = Text.translatable("announcement.role.vigilante").getString();
-        String civilianRoleName = Text.translatable("announcement.role.civilian").getString();
+        // Calculate percentages for display
+        float totalWeight = killerWeight + vigilanteWeight + 1.0f; // Civilian weight is always 1.0
+        float killerPercent = (killerWeight / totalWeight) * 100;
+        float vigilantePercent = (vigilanteWeight / totalWeight) * 100;
 
-        // Create action bar message
+        // Get role translations and remove exclamation marks if present
+        String killerRoleName = removeExclamationMark(Text.translatable("announcement.role.killer").getString());
+        String vigilanteRoleName = removeExclamationMark(Text.translatable("announcement.role.vigilante").getString());
+
+        // Create action bar message with percentages
         MutableText actionBarText = Text.literal("")
                 .append(Text.literal(killerRoleName + ": ").formatted(Formatting.RED))
-                .append(Text.literal(String.format("%.2f", killerWeight)).formatted(Formatting.WHITE))
+                .append(Text.literal(String.format("%.1f%%", killerPercent)).formatted(Formatting.WHITE))
                 .append(Text.literal(" | ").formatted(Formatting.GRAY))
                 .append(Text.literal(vigilanteRoleName + ": ").formatted(Formatting.BLUE))
-                .append(Text.literal(String.format("%.2f", vigilanteWeight)).formatted(Formatting.WHITE))
-                .append(Text.literal(" | ").formatted(Formatting.GRAY))
-                .append(Text.literal(civilianRoleName + ": ").formatted(Formatting.GREEN))
-                .append(Text.literal("1.00").formatted(Formatting.WHITE));
-
+                .append(Text.literal(String.format("%.1f%%", vigilantePercent)).formatted(Formatting.WHITE));
         // Send to action bar
         player.sendMessage(actionBarText, true);
         
         // Also send feedback to chat
         source.sendFeedback(() -> Text.literal("Role weights displayed in your action bar.").formatted(Formatting.GRAY), false);
+    }
+    
+    /**
+     * Removes the exclamation mark from role names if present
+     */
+    private static String removeExclamationMark(String roleName) {
+        return roleName.substring(0, roleName.length() - 1);
     }
 }

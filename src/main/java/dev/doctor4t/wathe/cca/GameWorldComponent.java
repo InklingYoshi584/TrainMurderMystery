@@ -67,6 +67,7 @@ public class GameWorldComponent implements AutoSyncedComponent, ServerTickingCom
     private float backfireChance = 0f;
     private int nextRoundKillerCount = 0; // 0 = use ratio, >0 = exact count for next round
     private int killerPlayerRatio = 6; // 1 killer per X players
+    private boolean isOriginalModeRandom = false; // Track if the original game mode was random
 
     private int killerDividend = 5;
     private int vigilanteDividend = 5;
@@ -242,6 +243,8 @@ public class GameWorldComponent implements AutoSyncedComponent, ServerTickingCom
 
     public void setGameMode(GameMode gameMode) {
         this.gameMode = gameMode;
+        // Track if the original game mode was random
+        this.isOriginalModeRandom = gameMode == WatheGameModes.RANDOM;
         this.sync();
     }
 
@@ -249,9 +252,58 @@ public class GameWorldComponent implements AutoSyncedComponent, ServerTickingCom
         return mapEffect;
     }
 
+    public boolean isOriginalModeRandom() {
+        return isOriginalModeRandom;
+    }
+
+    public void setOriginalModeRandom(boolean isOriginalModeRandom) {
+        this.isOriginalModeRandom = isOriginalModeRandom;
+        this.sync();
+    }
+
     public void setMapEffect(MapEffect mapEffect) {
         this.mapEffect = mapEffect;
         this.sync();
+    }
+
+    /**
+     * Returns true if the current game mode is a murder-style game mode
+     * (either MurderGameMode or RandomGameMode in murder mode)
+     */
+    public boolean isMurderMode() {
+        if (gameMode == WatheGameModes.MURDER) {
+            return true;
+        }
+        if (gameMode == WatheGameModes.RANDOM) {
+            // For RandomGameMode, check if there are any killer roles assigned
+            // This indicates we're in murder mode
+            for (Role role : roles.values()) {
+                if (role == WatheRoles.KILLER || role == WatheRoles.VIGILANTE) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns true if the current game mode is a loose ends-style game mode
+     * (either LooseEndsGameMode or RandomGameMode in loose ends mode)
+     */
+    public boolean isLooseEndsMode() {
+        if (gameMode == WatheGameModes.LOOSE_ENDS) {
+            return true;
+        }
+        if (gameMode == WatheGameModes.RANDOM) {
+            // For RandomGameMode, check if there are any loose end roles assigned
+            // This indicates we're in loose ends mode
+            for (Role role : roles.values()) {
+                if (role == WatheRoles.LOOSE_END) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public UUID getLooseEndWinner() {

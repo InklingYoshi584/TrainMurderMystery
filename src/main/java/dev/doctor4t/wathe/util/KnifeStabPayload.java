@@ -35,7 +35,7 @@ public record KnifeStabPayload(int target) implements CustomPayload {
             GameFunctions.killPlayer(target, true, player, GameConstants.DeathReasons.KNIFE);
             target.playSound(WatheSounds.ITEM_KNIFE_STAB, 1.0f, 1.0f);
             player.swingHand(Hand.MAIN_HAND);
-            if (!player.isCreative() && GameWorldComponent.KEY.get(context.player().getWorld()).getGameMode() != WatheGameModes.LOOSE_ENDS) {
+            if (!player.isCreative() && !GameWorldComponent.KEY.get(context.player().getWorld()).isLooseEndsMode()) {
                 GameWorldComponent gameComponent = GameWorldComponent.KEY.get(context.player().getWorld());
                 
                 // Calculate current excess players

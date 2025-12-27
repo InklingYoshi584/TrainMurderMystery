@@ -57,4 +57,4 @@ public class GameModeArgumentType implements ArgumentType<Identifier> {
         }
     }
 }
-
+

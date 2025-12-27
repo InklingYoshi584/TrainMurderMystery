@@ -20,6 +20,7 @@ public class WatheComponents implements WorldComponentInitializer, EntityCompone
         registry.register(GameTimeComponent.KEY, GameTimeComponent::new);
         registry.register(AutoStartComponent.KEY, AutoStartComponent::new);
         registry.register(GameRoundEndComponent.KEY, GameRoundEndComponent::new);
+        registry.register(RoleWeightDisplayComponent.KEY, RoleWeightDisplayComponent::new);
     }
 
     @Override

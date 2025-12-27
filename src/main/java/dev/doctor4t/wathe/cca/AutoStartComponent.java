@@ -41,11 +41,34 @@ public class AutoStartComponent implements AutoSyncedComponent, CommonTickingCom
 
         if (this.startTime <= 0 && this.time <= 0) return;
 
-        GameMode gameMode = gameWorldComponent.getGameMode();
-        if (GameFunctions.getReadyPlayerCount(world) >= gameMode.minPlayerCount) {
+        GameMode storedGameMode = gameWorldComponent.getGameMode();
+        int playerCount = GameFunctions.getReadyPlayerCount(world);
+        
+        // Calculate the actual game mode if original mode was random or stored is random
+        GameMode actualGameMode = storedGameMode;
+        if (gameWorldComponent.isOriginalModeRandom() || actualGameMode == WatheGameModes.RANDOM) {
+            // Calculate actual game mode based on player count and random chance
+            if (playerCount < 5 || world.getRandom().nextFloat() < 0.2f) {
+                // 2-4 players: Always Loose Ends, or 20% chance for 5+ players
+                actualGameMode = WatheGameModes.LOOSE_ENDS;
+            } else {
+                // 80% chance for 5+ players: Murder
+                actualGameMode = WatheGameModes.MURDER;
+            }
+        }
+        
+        // Check if we have enough players for the actual game mode
+        if (playerCount >= actualGameMode.minPlayerCount) {
             if (this.time-- <= 0 && this.world instanceof ServerWorld serverWorld) {
                 if (gameWorldComponent.getGameStatus() == GameWorldComponent.GameStatus.INACTIVE) {
-                    GameFunctions.startGame(serverWorld, gameMode, gameWorldComponent.getMapEffect(), GameConstants.getInTicks(gameMode.defaultStartTime, 0));
+                    // Save the original random mode flag
+                    boolean wasOriginalModeRandom = gameWorldComponent.isOriginalModeRandom();
+                    // Start the game with the actual game mode
+                    GameFunctions.startGame(serverWorld, actualGameMode, gameWorldComponent.getMapEffect(), GameConstants.getInTicks(actualGameMode.defaultStartTime, 0));
+                    // Restore the original random mode flag
+                    if (wasOriginalModeRandom) {
+                        GameWorldComponent.KEY.get(serverWorld).setOriginalModeRandom(true);
+                    }
                     return;
                 }
             }

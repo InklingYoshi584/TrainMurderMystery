@@ -10,6 +10,8 @@ public class WatheConfig extends MidnightConfig {
     public static boolean ultraPerfMode = false;
     @Entry
     public static boolean disableScreenShake = false;
+    @Entry
+    public static boolean showRoleWeights = true;
 
     @Override
     public void writeChanges(String modid) {
