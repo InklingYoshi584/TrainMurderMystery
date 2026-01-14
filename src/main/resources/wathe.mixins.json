@@ -15,6 +15,7 @@
     "LivingEntityMixin",
     "PlayerEntityMixin",
     "PlayerInventoryMixin",
+    "ServerCommandSourceMixin",
     "ServerPlayerEntityMixin",
     "ServerPlayNetworkHandlerMixin",
     "client.LivingEntityRendererMixin"
