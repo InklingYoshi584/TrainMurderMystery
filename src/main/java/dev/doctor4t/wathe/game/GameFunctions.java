@@ -24,6 +24,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.pattern.CachedBlockPosition;
 import net.minecraft.component.ComponentMap;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -340,6 +341,9 @@ public class GameFunctions {
     record BlockInfo(BlockPos pos, BlockState state, @Nullable BlockEntityInfo blockEntityInfo) {
     }
 
+    record EntityInfo(EntityType<?> entityType, Vec3d relativePos, float yaw, float pitch, NbtCompound entityData) {
+    }
+
     enum Mode {
         FORCE(true),
         MOVE(true),
@@ -377,6 +381,36 @@ public class GameFunctions {
                 BlockPos blockPos5 = new BlockPos(
                         trainBox.getMinX() - backupTrainBox.getMinX(), trainBox.getMinY() - backupTrainBox.getMinY(), trainBox.getMinZ() - backupTrainBox.getMinZ()
                 );
+
+                // Collect display entities before clearing
+                List<EntityInfo> displayEntities = Lists.newArrayList();
+                for (Entity entity : serverWorld.iterateEntities()) {
+                    if (backupTrainBox.contains(entity.getBlockPos()) && 
+                        !(entity instanceof PlayerBodyEntity) && 
+                        !(entity instanceof ItemEntity) &&
+                        !(entity instanceof FirecrackerEntity) &&
+                        !(entity instanceof NoteEntity)) {
+                        // Skip entities that will be discarded later
+                        if (entity.getType() == WatheEntities.FIRECRACKER || 
+                            entity.getType() == WatheEntities.NOTE ||
+                            entity.getType() == WatheEntities.PLAYER_BODY ||
+                            entity.getType() == EntityType.ITEM) {
+                            continue;
+                        }
+                        
+                        NbtCompound entityData = new NbtCompound();
+                        entity.writeNbt(entityData);
+                        Vec3d relativePos = entity.getPos().subtract(Vec3d.of(backupMinPos));
+                        EntityInfo entityInfo = new EntityInfo(
+                            entity.getType(),
+                            relativePos,
+                            entity.getYaw(),
+                            entity.getPitch(),
+                            entityData
+                        );
+                        displayEntities.add(entityInfo);
+                    }
+                }
 
                 for (int k = backupTrainBox.getMinZ(); k <= backupTrainBox.getMaxZ(); k++) {
                     for (int l = backupTrainBox.getMinY(); l <= backupTrainBox.getMaxY(); l++) {
@@ -439,6 +473,24 @@ public class GameFunctions {
                     serverWorld.updateNeighbors(blockInfo2x.pos, blockInfo2x.state.getBlock());
                 }
 
+                // Restore display entities after block placement
+                for (EntityInfo entityInfo : displayEntities) {
+                    Vec3d newPos = Vec3d.of(trainMinPos).add(entityInfo.relativePos);
+                    Entity newEntity = entityInfo.entityType.create(serverWorld);
+                    if (newEntity != null) {
+                        // Remove the UUID from the saved data to generate a new one
+                        NbtCompound entityData = entityInfo.entityData.copy();
+                        entityData.remove("UUID");
+                        entityData.remove("uuid");
+                        
+                        newEntity.readNbt(entityData);
+                        newEntity.setPosition(newPos);
+                        newEntity.setYaw(entityInfo.yaw);
+                        newEntity.setPitch(entityInfo.pitch);
+                        serverWorld.spawnEntity(newEntity);
+                    }
+                }
+
                 serverWorld.getBlockTickScheduler().scheduleTicks(serverWorld.getBlockTickScheduler(), backupTrainBox, blockPos5);
                 if (mx == 0) {
                     Wathe.LOGGER.info("Train reset failed: No blocks copied. Queueing another attempt.");
@@ -460,7 +512,6 @@ public class GameFunctions {
                 entity.discard();
             for (NoteEntity entity : serverWorld.getEntitiesByType(WatheEntities.NOTE, entity -> true))
                 entity.discard();
-
 
             Wathe.LOGGER.info("Train reset successful.");
             return false;
