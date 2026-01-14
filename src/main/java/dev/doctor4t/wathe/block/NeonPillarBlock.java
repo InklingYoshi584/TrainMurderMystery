@@ -1,5 +1,6 @@
 package dev.doctor4t.wathe.block;
 
+import dev.doctor4t.wathe.cca.GameWorldComponent;
 import dev.doctor4t.wathe.index.WatheProperties;
 import dev.doctor4t.wathe.index.WatheSounds;
 import net.minecraft.block.Block;
@@ -7,6 +8,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.PillarBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
@@ -27,6 +29,31 @@ public class NeonPillarBlock extends PillarBlock {
     public NeonPillarBlock(Settings settings) {
         super(settings);
         this.setDefaultState(super.getDefaultState().with(LIT, false).with(ACTIVE, true));
+    }
+
+    @Override
+    public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
+        super.onBlockAdded(state, world, pos, oldState, notify);
+        if (!world.isClient) {
+            world.scheduleBlockTick(pos, this, 4);
+        }
+    }
+
+    @Override
+    public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, net.minecraft.util.math.random.Random random) {
+        super.scheduledTick(state, world, pos, random);
+        
+        // Check if psycho mode is active
+        GameWorldComponent gameWorldComponent = GameWorldComponent.KEY.get(world);
+        if (gameWorldComponent.isPsychoActive()) {
+            // Toggle the light state every 4 ticks when psycho mode is active
+            boolean currentLit = state.get(LIT);
+            world.setBlockState(pos, state.with(LIT, !currentLit), Block.NOTIFY_ALL);
+            world.playSound(null, pos, WatheSounds.BLOCK_LIGHT_TOGGLE, SoundCategory.BLOCKS, 0.3f, currentLit ? 1f : 1.2f);
+        }
+        
+        // Schedule the next tick
+        world.scheduleBlockTick(pos, this, 4);
     }
 
     @Override
