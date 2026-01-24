@@ -3,6 +3,7 @@ package dev.doctor4t.wathe.cca;
 import dev.doctor4t.wathe.Wathe;
 import dev.doctor4t.wathe.WatheConfig;
 import dev.doctor4t.wathe.api.WatheRoles;
+import dev.doctor4t.wathe.game.GameFunctions;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -50,6 +51,10 @@ public class RoleWeightDisplayComponent implements ServerTickingComponent {
         // Cast to ServerWorld to get ServerPlayerEntity list
         if (world instanceof ServerWorld serverWorld) {
             for (ServerPlayerEntity player : serverWorld.getPlayers()) {
+                MapVariablesWorldComponent areas = MapVariablesWorldComponent.KEY.get(world);
+                if (!areas.getReadyArea().contains(player.getPos())) {
+                    return;
+                }
                 displayRoleWeightsForPlayer(player, selector, gameComponent);
             }
         }

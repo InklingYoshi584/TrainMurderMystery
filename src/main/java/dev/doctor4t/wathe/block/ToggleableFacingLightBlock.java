@@ -28,7 +28,7 @@ public abstract class ToggleableFacingLightBlock extends FacingLightBlock {
     public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
         super.onBlockAdded(state, world, pos, oldState, notify);
         if (!world.isClient) {
-            world.scheduleBlockTick(pos, this, 4);
+            world.scheduleBlockTick(pos, this, 10);
         }
     }
 
@@ -39,14 +39,14 @@ public abstract class ToggleableFacingLightBlock extends FacingLightBlock {
         // Check if psycho mode is active
         GameWorldComponent gameWorldComponent = GameWorldComponent.KEY.get(world);
         if (gameWorldComponent.isPsychoActive()) {
-            // Toggle the light state every 4 ticks when psycho mode is active
+            // Toggle the light state every 10 ticks when psycho mode is active
             boolean currentLit = state.get(LIT);
             world.setBlockState(pos, state.with(LIT, !currentLit), Block.NOTIFY_ALL);
             world.playSound(null, pos, WatheSounds.BLOCK_LIGHT_TOGGLE, SoundCategory.BLOCKS, 0.3f, currentLit ? 1f : 1.2f);
         }
         
         // Schedule the next tick
-        world.scheduleBlockTick(pos, this, 4);
+        world.scheduleBlockTick(pos, this, 10);
     }
 
     @Override
