@@ -382,7 +382,7 @@ public class WatheClient implements ClientModInitializer {
     }
 
     public static boolean isInstinctEnabled() {
-        return instinctKeybind.isPressed();
+        return instinctKeybind.isPressed() && (isPlayerAliveAndInSurvival() || gameComponent.canUseKillerFeatures(MinecraftClient.getInstance().player));
     }
 
     public static int getLockedRenderDistance(boolean ultraPerfMode) {
