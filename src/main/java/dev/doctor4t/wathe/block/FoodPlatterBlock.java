@@ -1,10 +1,12 @@
 package dev.doctor4t.wathe.block;
 
-import com.mojang.serialization.MapCodec;
+import dev.doctor4t.wathe.Wathe;
 import dev.doctor4t.wathe.block_entity.BeveragePlateBlockEntity;
 import dev.doctor4t.wathe.index.WatheBlockEntities;
 import dev.doctor4t.wathe.index.WatheDataComponentTypes;
 import dev.doctor4t.wathe.index.WatheItems;
+import dev.doctor4t.wathe.item.CocktailItem;
+import dev.doctor4t.wathe.util.PoisonUtils;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
@@ -13,6 +15,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.FoodComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundCategory;
@@ -26,6 +29,8 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import com.mojang.serialization.MapCodec;
 
 import java.util.List;
 
@@ -83,13 +88,57 @@ public class FoodPlatterBlock extends BlockWithEntity {
             blockEntity.setPoisoner(player.getUuidAsString());
             player.getStackInHand(Hand.MAIN_HAND).decrement(1);
             player.playSoundToPlayer(SoundEvents.BLOCK_BREWING_STAND_BREW, SoundCategory.BLOCKS, 0.5f, 1f);
+            
+            // Spread poison to adjacent food platters and drink trays
+            if (!world.isClient) {
+                PoisonUtils.spreadPlatePoison(world, pos, player.getUuidAsString());
+            }
+            
             return ActionResult.SUCCESS;
         }
         if (player.getStackInHand(Hand.MAIN_HAND).isEmpty()) {
             List<ItemStack> platter = blockEntity.getStoredItems();
             if (platter.isEmpty()) return ActionResult.SUCCESS;
 
+            // Check if player already has food or drink items
+            boolean hasFoodItem = false;
+            boolean hasDrinkItem = false;
+            
+            // Check player's inventory for existing food/drink items
+            for (int i = 0; i < player.getInventory().size(); i++) {
+                ItemStack invItem = player.getInventory().getStack(i);
+                FoodComponent food = (FoodComponent)invItem.get(DataComponentTypes.FOOD);
+                if (!invItem.isEmpty()) {
+                    // Check if item is a drink (CocktailItem)
+                    if (invItem.getItem() instanceof CocktailItem) {
+                        hasDrinkItem = true;
+                    }
+                    
+                    // Check if item is food (has food component or is edible)
+                    else if (food != null) {
+                        hasFoodItem = true;
+                    }
+                }
+            }
 
+            // Check if the platter contains food or drink items
+            boolean platterHasFood = false;
+            boolean platterHasDrink = false;
+            for (ItemStack platterItem : platter) {
+                FoodComponent foodComponent = (FoodComponent)platterItem.get(DataComponentTypes.FOOD);
+                if (platterItem.getItem() instanceof CocktailItem) {
+                    platterHasDrink = true;
+                } else if (foodComponent != null) {
+                    platterHasFood = true;
+                }
+            }
+
+            // Prevent picking up if player already has the same type of item
+            if ((platterHasFood && hasFoodItem) || (platterHasDrink && hasDrinkItem)) {
+                return ActionResult.PASS;
+            }
+
+            // Original logic: check for exact same item type
             boolean hasPlatterItem = false;
             for (ItemStack platterItem : platter) {
                 for (int i = 0; i < player.getInventory().size(); i++) {
@@ -110,6 +159,11 @@ public class FoodPlatterBlock extends BlockWithEntity {
                 if (poisoner != null) {
                     randomItem.set(WatheDataComponentTypes.POISONER, poisoner);
                     blockEntity.setPoisoner(null);
+                    
+                    // Remove poison from adjacent plates when item is taken
+                    if (!world.isClient) {
+                        removeAdjacentPlatePoison(world, pos, poisoner);
+                    }
                 }
                 player.playSoundToPlayer(SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.BLOCKS, 1f, 1f);
                 player.setStackInHand(Hand.MAIN_HAND, randomItem);
@@ -117,6 +171,32 @@ public class FoodPlatterBlock extends BlockWithEntity {
         }
 
         return ActionResult.PASS;
+    }
+
+    /**
+     * Remove poison from adjacent plates when an item is taken from a poisoned plate.
+     */
+    private void removeAdjacentPlatePoison(World world, BlockPos centerPos, String poisoner) {
+        int radius = 2;
+        for (int dx = -radius; dx <= radius; dx++) {
+            for (int dy = -radius; dy <= radius; dy++) {
+                for (int dz = -radius; dz <= radius; dz++) {
+                    BlockPos pos = centerPos.add(dx, dy, dz);
+                    
+                    // Skip the center position (source of poison removal)
+                    if (pos.equals(centerPos)) continue;
+                    
+                    // Check if this is a food platter or drink tray
+                    if (world.getBlockEntity(pos) instanceof BeveragePlateBlockEntity plateEntity) {
+                        // Only remove poison from plates with the same poisoner
+                        if (poisoner.equals(plateEntity.getPoisoner())) {
+                            // Remove the poison
+                            plateEntity.setPoisoner(null);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @Override

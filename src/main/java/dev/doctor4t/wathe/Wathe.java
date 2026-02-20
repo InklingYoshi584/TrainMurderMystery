@@ -3,11 +3,13 @@ package dev.doctor4t.wathe;
 import com.google.common.reflect.Reflection;
 import dev.doctor4t.wathe.block.DoorPartBlock;
 import dev.doctor4t.wathe.cca.GameWorldComponent;
+import dev.doctor4t.wathe.cca.MapVariablesWorldComponent;
 import dev.doctor4t.wathe.command.*;
 import dev.doctor4t.wathe.command.argument.GameModeArgumentType;
 import dev.doctor4t.wathe.command.argument.MapEffectArgumentType;
 import dev.doctor4t.wathe.command.argument.TimeOfDayArgumentType;
 import dev.doctor4t.wathe.game.GameConstants;
+import dev.doctor4t.wathe.game.GameFunctions;
 import dev.doctor4t.wathe.index.*;
 import dev.doctor4t.wathe.util.*;
 import dev.upcraft.datasync.api.DataSyncAPI;
@@ -24,6 +26,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -84,6 +87,33 @@ public class Wathe implements ModInitializer {
         ServerPlayerEvents.JOIN.register(player -> {
             DataSyncAPI.refreshAllPlayerData(player.getUuid()).thenRunAsync(() -> {
             }, player.getWorld().getServer());
+            
+            // Handle player joining based on game state
+            GameWorldComponent gameWorldComponent = GameWorldComponent.KEY.get(player.getWorld());
+            MapVariablesWorldComponent areas = MapVariablesWorldComponent.KEY.get(player.getWorld());
+            
+            // Check if player already has a role (is already in the game)
+            if (gameWorldComponent.getRole(player) != null) {
+                // Player is already in the game - do nothing
+                return;
+            }
+            
+            if (gameWorldComponent.isRunning()) {
+                // Game is active - teleport player to spectator spawn position
+                if (areas.getSpectatorSpawnPos() != null) {
+                    player.teleport(player.getServerWorld(), 
+                        areas.getSpectatorSpawnPos().pos.getX(), 
+                        areas.getSpectatorSpawnPos().pos.getY(), 
+                        areas.getSpectatorSpawnPos().pos.getZ(), 
+                        areas.getSpectatorSpawnPos().yaw, 
+                        areas.getSpectatorSpawnPos().pitch);
+                }
+                // Set player to spectator mode
+                player.changeGameMode(net.minecraft.world.GameMode.SPECTATOR);
+            } else {
+                // Game is not active - reset the player
+                GameFunctions.resetPlayer(player);
+            }
         });
 
         PayloadTypeRegistry.playS2C().register(ShootMuzzleS2CPayload.ID, ShootMuzzleS2CPayload.CODEC);

@@ -1,6 +1,9 @@
 package dev.doctor4t.wathe.util;
 
 import dev.doctor4t.wathe.Wathe;
+import dev.doctor4t.wathe.block.DrinkTrayBlock;
+import dev.doctor4t.wathe.block.FoodPlatterBlock;
+import dev.doctor4t.wathe.block_entity.BeveragePlateBlockEntity;
 import dev.doctor4t.wathe.block_entity.TrimmedBedBlockEntity;
 import dev.doctor4t.wathe.cca.PlayerPoisonComponent;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -179,7 +182,9 @@ public class PoisonUtils {
 
     private static boolean isBlocking(World world, BlockPos pos) {
         BlockState state = world.getBlockState(pos);
-        return !(state.getBlock() instanceof BedBlock);
+        return !(state.getBlock() instanceof BedBlock || 
+                 state.getBlock() instanceof FoodPlatterBlock || 
+                 state.getBlock() instanceof DrinkTrayBlock);
     }
 
 
@@ -201,6 +206,35 @@ public class PoisonUtils {
         }
 
         return null;
+    }
+
+    /**
+     * Spread poison from a poisoned food platter or drink tray to adjacent containers.
+     */
+    public static void spreadPlatePoison(World world, BlockPos centerPos, String poisoner) {
+        int radius = 2;
+        for (int dx = -radius; dx <= radius; dx++) {
+            for (int dy = -radius; dy <= radius; dy++) {
+                for (int dz = -radius; dz <= radius; dz++) {
+                    BlockPos pos = centerPos.add(dx, dy, dz);
+                    
+                    // Skip the center position (source of poison)
+                    if (pos.equals(centerPos)) continue;
+                    
+                    // Check if this is a food platter or drink tray
+                    if (world.getBlockEntity(pos) instanceof BeveragePlateBlockEntity plateEntity) {
+                        // Only spread to plates that aren't already poisoned
+                        if (plateEntity.getPoisoner() == null) {
+                            // Check if there's a clear line of sight
+                            if (isLineClear(world, centerPos, pos)) {
+                                // Spread the poison
+                                plateEntity.setPoisoner(poisoner);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
 
