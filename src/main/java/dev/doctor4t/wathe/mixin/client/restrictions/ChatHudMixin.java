@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.Mixin;
 public class ChatHudMixin {
     @WrapMethod(method = "render")
     public void wathe$disableChatRender(DrawContext context, int currentTick, int mouseX, int mouseY, boolean focused, Operation<Void> original) {
-        if (!WatheClient.isPlayerAliveAndInSurvival()) {
+        if (true) {
             original.call(context, currentTick, mouseX, mouseY, focused);
         }
     }

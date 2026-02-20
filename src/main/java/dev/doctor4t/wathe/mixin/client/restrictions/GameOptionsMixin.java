@@ -12,10 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public class GameOptionsMixin {
     @ModifyReturnValue(method = "getPerspective", at = @At("RETURN"))
     public Perspective getPerspective(Perspective original) {
-        if (GameFunctions.isPlayerAliveAndSurvival(MinecraftClient.getInstance().player)) {
-            return Perspective.FIRST_PERSON;
-        } else {
+
             return original;
-        }
     }
 }

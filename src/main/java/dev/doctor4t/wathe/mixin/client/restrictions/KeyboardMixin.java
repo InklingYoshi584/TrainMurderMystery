@@ -10,10 +10,6 @@ import org.spongepowered.asm.mixin.Mixin;
 public class KeyboardMixin {
     @WrapMethod(method = "processF3")
     private boolean wathe$disableF3Keybinds(int key, Operation<Boolean> original) {
-        if (WatheClient.isPlayerAliveAndInSurvival()) {
-            return key == 293 ? original.call(key) : false;
-        } else {
             return original.call(key);
-        }
     }
 }
