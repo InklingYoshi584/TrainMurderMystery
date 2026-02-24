@@ -68,6 +68,7 @@ public class Wathe implements ModInitializer {
                 StartCommand.register(dispatcher);
                 StopCommand.register(dispatcher);
                 SetVisualCommand.register(dispatcher);
+                CountBoardedPlayersCommand.register(dispatcher);
                 ForceRoleCommand.register(dispatcher);
     //           UpdateDoorsCommand.register(dispatcher);
                 SetTimerCommand.register(dispatcher);
